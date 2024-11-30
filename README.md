@@ -1,5 +1,5 @@
 # Great Reads App
 
-## Databse Diagram
+## Database Diagram
 
 ![Great Reads.png](db/Great%20Reads.png)
