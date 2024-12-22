@@ -1,4 +1,4 @@
-package org.greatreads.models;
+package org.greatreads.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,15 +9,15 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "genres")
-public class Genre {
+@Table(name = "roles")
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
-    private List<Book> books;
+    @OneToMany(mappedBy = "role", cascade = CascadeType.ALL)
+    private List<User> users;
 }

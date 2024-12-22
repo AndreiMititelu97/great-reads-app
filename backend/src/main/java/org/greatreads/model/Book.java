@@ -1,4 +1,4 @@
-package org.greatreads.models;
+package org.greatreads.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,32 +10,39 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "users")
-public class User {
+@Table(name = "books")
+public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column(unique = true, nullable = false)
-    private String email;
+    private int id;
 
     @Column(nullable = false)
-    private String password;
+    private String title;
 
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
+    private String description;
 
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+    @ManyToOne
+    @JoinColumn(name = "genre_id", nullable = false)
+    private Genre genre;
 
-    @ManyToOne()
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+    @Column(name = "ISBN", unique = true, nullable = false)
+    private String isbn;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User author;
+
+    @Column(name = "published_date", nullable = false)
+    private LocalDateTime publishDate;
+
+    @Column(name = "url_link")
+    private String urlLink;
 
     @Column(nullable = false)
-    private Boolean isBlocked = false;
+    private boolean isApproved = false;
 
-    private String avatar;
+    @Column(name = "page_cover")
+    private String pageCover;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -43,13 +50,10 @@ public class User {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-    private List<Book> books;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<Review> reviews;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<UserToBooks> userToBooks;
 
     @PrePersist

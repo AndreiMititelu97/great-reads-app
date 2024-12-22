@@ -1,4 +1,4 @@
-package org.greatreads.models;
+package org.greatreads.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -6,31 +6,30 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Getter
 @Setter
+@Getter
 @Entity
-@Table(name = "user_books")
-public class UserToBooks {
+@Table(name = "reviews")
+public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne()
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(nullable = false)
+    private short rating;
 
-    @ManyToOne()
-    @JoinColumn(name = "book_id")
+    private String comment;
+
+    @Column(name = "published_date", nullable = false, updatable = false)
+    private LocalDateTime publishedDate;
+
+    @ManyToOne
+    @JoinColumn(name = "book_id", nullable = false)
     private Book book;
 
-    @Column(nullable = false)
-    private boolean isRead = false;
-
-    @Column(nullable = false)
-    private boolean isWishlist = false;
-
-    @Column(name = "read_date")
-    private LocalDateTime readDate;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -42,6 +41,7 @@ public class UserToBooks {
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        this.publishedDate = LocalDateTime.now();
     }
 
     @PreUpdate
