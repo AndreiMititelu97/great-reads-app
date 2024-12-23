@@ -16,7 +16,7 @@ public class Review {
     private Integer id;
 
     @Column(nullable = false)
-    private short rating;
+    private String rating;
 
     private String comment;
 
