@@ -1,9 +1,6 @@
 package org.greatreads.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,17 +18,16 @@ public class UserDTO {
     private String password;
 
     @NotBlank(message = "First name is mandatory")
-    @NotNull(message = "First name can not be null")
     private String firstName;
 
     @NotBlank(message = "Last name is mandatory")
-    @NotNull(message = "Last name can not be null")
     private String lastName;
 
-    @NotBlank(message = "Role id is mandatory")
+    @Positive(message = "Role id must be positive")
     @NotNull(message = "Role id can not be null")
     private Integer roleId;
 
-    private Boolean isBlocked;
+    private Boolean isBlocked = false;
+
     private String avatar;
 }
