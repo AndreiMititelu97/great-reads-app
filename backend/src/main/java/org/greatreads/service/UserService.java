@@ -8,6 +8,6 @@ public interface UserService {
     User register(String email, String password, Role role);
     User updateEmail(String currentEmail, String newEmail);
     User updatePassword(String email, String oldPassword, String newPassword);
-    User uploadProfilePicture(String email, String pictureLink);//TODO
+    User uploadProfilePicture(String email, String pictureLink);
     void blockUser(String email);
 }
