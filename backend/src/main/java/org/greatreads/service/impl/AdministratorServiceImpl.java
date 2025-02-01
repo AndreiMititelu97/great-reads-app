@@ -16,16 +16,14 @@ public class AdministratorServiceImpl implements AdministratorService {
     @Override
     @Transactional
     public void approveBook(int bookId) {
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException("Book with id: " + bookId + "was not found"));
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId));
         book.setApproved(true);
     }
 
     @Override
     @Transactional
     public void rejectBook(int bookId) {
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException("Book with id: " + bookId + "was not found"));
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId));
         book.setApproved(false);
     }
 }

@@ -30,11 +30,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User updateEmail(String currentEmail, String newEmail) {
         if (userRepository.existsByEmail(newEmail)) {
-            throw new UserAlreadyExistsException("User with email " + newEmail + " already exists");
+            throw new UserAlreadyExistsException(newEmail);
         }
 
-        User user = userRepository.findByEmail(currentEmail)
-                .orElseThrow(() -> new UserNotFoundException("User with email " + currentEmail + " does not exist"));
+        User user = userRepository.findByEmail(currentEmail).orElseThrow(() -> new UserNotFoundException(currentEmail));
         user.setEmail(newEmail);
 
         return user;
@@ -54,7 +53,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void blockUser(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " does not exist"));
+                .orElseThrow(() -> new UserNotFoundException(email));
 
         user.setIsBlocked(true);
         userRepository.save(user);

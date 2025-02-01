@@ -27,11 +27,10 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public Review addReview(int bookId, ReviewDTO reviewDTO) {
-        Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new BookNotFoundException("Book with id: " + bookId + "was not found"));
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId));
 
         User user = userRepository.findById(reviewDTO.getUserId())
-                .orElseThrow(() -> new UserNotFoundException("User with id: " + reviewDTO.getUserId() + "was not found"));
+                .orElseThrow(() -> new UserNotFoundException(reviewDTO.getUserId()));
 
         Review review = new Review();
         review.setRating(reviewDTO.getRating());
@@ -45,11 +44,10 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public Review updateReview(int reviewId, ReviewDTO reviewDTO) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ReviewNotFoundException("Review with id: " + reviewId + "was not found"));
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new ReviewNotFoundException(reviewId));
 
         if (!Objects.equals(review.getUser().getId(), reviewDTO.getUserId())) {
-            throw new IllegalArgumentException("You are not allowed to update this review");
+            throw new IllegalArgumentException("This user is not allowed to update this review.");
         }
 
         review.setRating(reviewDTO.getRating());
@@ -60,8 +58,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public void deleteReview(int reviewId) {
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new ReviewNotFoundException("Review with id: " + reviewId + "was not found."));
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new ReviewNotFoundException(reviewId));
         reviewRepository.delete(review);
     }
 }
