@@ -2,6 +2,8 @@ package org.greatreads.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.greatreads.exception.UserAlreadyExistsException;
+import org.greatreads.exception.UserNotFoundException;
 import org.greatreads.model.Role;
 import org.greatreads.model.User;
 import org.greatreads.repository.UserRepository;
@@ -28,11 +30,11 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public User updateEmail(String currentEmail, String newEmail) {
         if (userRepository.existsByEmail(newEmail)) {
-            throw new IllegalArgumentException("User with email " + newEmail + " already exists");
+            throw new UserAlreadyExistsException("User with email " + newEmail + " already exists");
         }
 
         User user = userRepository.findByEmail(currentEmail)
-                .orElseThrow(() -> new IllegalArgumentException("User with email " + currentEmail + " does not exist"));
+                .orElseThrow(() -> new UserNotFoundException("User with email " + currentEmail + " does not exist"));
         user.setEmail(newEmail);
 
         return user;
@@ -52,7 +54,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void blockUser(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User with email " + email + " does not exist"));
+                .orElseThrow(() -> new UserNotFoundException("User with email " + email + " does not exist"));
 
         user.setIsBlocked(true);
         userRepository.save(user);
