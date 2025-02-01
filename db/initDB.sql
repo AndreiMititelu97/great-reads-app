@@ -59,7 +59,7 @@ CREATE TABLE `books`(
 DROP TABLE IF EXISTS `reviews`;
 CREATE TABLE `reviews` (
 	`id` INT NOT NULL AUTO_INCREMENT,
-	`rating` ENUM('1', '2', '3', '4', '5') NOT NULL,
+	`rating` INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
 	`comment` TEXT,
 	`published_date` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `book_id` INT NOT NULL,
