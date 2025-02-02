@@ -11,5 +11,5 @@ public interface BookService {
     Book addBook(BookDTO bookDTO);
     Book updateBook(int bookId, BookDTO bookDTO);
     void deleteBook(int bookId);
-    void uploadBook(int bookId, String url); //TODO
+    void uploadBook(int bookId, String url);
 }
