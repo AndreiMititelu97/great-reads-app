@@ -73,14 +73,27 @@ public class BookServiceImpl implements BookService {
             book.setGenre(genre);
         }
 
-        book.setTitle(bookDTO.getTitle());
-        book.setDescription(bookDTO.getDescription());
-        book.setIsbn(bookDTO.getIsbn());
-        book.setPublishDate(bookDTO.getPublishedDate());
-        book.setUrlLink(bookDTO.getUrlLink());
-        book.setApproved(bookDTO.getIsApproved());
-        book.setPageCover(bookDTO.getPageCover());
-
+        if (bookDTO.getIsbn() != null) {
+            book.setIsbn(bookDTO.getIsbn());
+        }
+        if (bookDTO.getTitle() != null) {
+            book.setTitle(bookDTO.getTitle());
+        }
+        if (bookDTO.getDescription() != null) {
+            book.setDescription(bookDTO.getDescription());
+        }
+        if (bookDTO.getPublishedDate() != null) {
+            book.setPublishDate(bookDTO.getPublishedDate());
+        }
+        if (bookDTO.getUrlLink() != null) {
+            book.setUrlLink(bookDTO.getUrlLink());
+        }
+        if (bookDTO.getIsApproved() != null) {
+            book.setApproved(bookDTO.getIsApproved());
+        }
+        if (bookDTO.getPageCover() != null) {
+            book.setPageCover(bookDTO.getPageCover());
+        }
         return bookRepository.save(book);
     }
 
