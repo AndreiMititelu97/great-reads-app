@@ -49,7 +49,7 @@ public class BookServiceImpl implements BookService {
         book.setDescription(bookDTO.getDescription());
         book.setGenre(genre);
         book.setIsbn(bookDTO.getIsbn());
-        book.setPublishDate(book.getPublishDate());
+        book.setPublishDate(bookDTO.getPublishDate());
         book.setUrlLink(bookDTO.getUrlLink());
         book.setApproved(bookDTO.getIsApproved());
         book.setPageCover(bookDTO.getPageCover());
@@ -82,8 +82,8 @@ public class BookServiceImpl implements BookService {
         if (bookDTO.getDescription() != null) {
             book.setDescription(bookDTO.getDescription());
         }
-        if (bookDTO.getPublishedDate() != null) {
-            book.setPublishDate(bookDTO.getPublishedDate());
+        if (bookDTO.getPublishDate() != null) {
+            book.setPublishDate(bookDTO.getPublishDate());
         }
         if (bookDTO.getUrlLink() != null) {
             book.setUrlLink(bookDTO.getUrlLink());

@@ -37,7 +37,7 @@ class BookDTOTest {
         bookDTO.setIsbn(isbn);
         bookDTO.setGenreId(genreId);
         bookDTO.setAuthorId(authorId);
-        bookDTO.setPublishedDate(publishedDate);
+        bookDTO.setPublishDate(publishedDate);
 
         Set<ConstraintViolation<BookDTO>> constraintViolations = validator.validate(bookDTO);
         Assertions.assertTrue(constraintViolations.isEmpty());
@@ -49,7 +49,7 @@ class BookDTOTest {
         bookDTO.setIsbn(isbn);
         bookDTO.setGenreId(genreId);
         bookDTO.setAuthorId(authorId);
-        bookDTO.setPublishedDate(publishedDate);
+        bookDTO.setPublishDate(publishedDate);
 
         Set<ConstraintViolation<BookDTO>> constraintViolations = validator.validate(bookDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -61,7 +61,7 @@ class BookDTOTest {
         bookDTO.setIsbn(isbn);
         bookDTO.setGenreId(genreId);
         bookDTO.setAuthorId(authorId);
-        bookDTO.setPublishedDate(publishedDate);
+        bookDTO.setPublishDate(publishedDate);
 
         Set<ConstraintViolation<BookDTO>> constraintViolations = validator.validate(bookDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -73,7 +73,7 @@ class BookDTOTest {
         bookDTO.setIsbn(isbn);
         bookDTO.setGenreId(genreId);
         bookDTO.setAuthorId(authorId);
-        bookDTO.setPublishedDate(publishedDate);
+        bookDTO.setPublishDate(publishedDate);
 
         Set<ConstraintViolation<BookDTO>> constraintViolations = validator.validate(bookDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -85,7 +85,7 @@ class BookDTOTest {
         bookDTO.setIsbn(isbn);
         bookDTO.setGenreId(genreId);
         bookDTO.setAuthorId(authorId);
-        bookDTO.setPublishedDate(publishedDate);
+        bookDTO.setPublishDate(publishedDate);
         bookDTO.setDescription("a".repeat(2001));
 
         Set<ConstraintViolation<BookDTO>> constraintViolations = validator.validate(bookDTO);
@@ -98,7 +98,7 @@ class BookDTOTest {
         bookDTO.setIsbn(isbn);
         bookDTO.setGenreId(null);
         bookDTO.setAuthorId(authorId);
-        bookDTO.setPublishedDate(publishedDate);
+        bookDTO.setPublishDate(publishedDate);
 
         Set<ConstraintViolation<BookDTO>> constraintViolations = validator.validate(bookDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -110,7 +110,7 @@ class BookDTOTest {
         bookDTO.setIsbn(isbn);
         bookDTO.setGenreId(genreId);
         bookDTO.setAuthorId(null);
-        bookDTO.setPublishedDate(publishedDate);
+        bookDTO.setPublishDate(publishedDate);
 
         Set<ConstraintViolation<BookDTO>> constraintViolations = validator.validate(bookDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -122,7 +122,7 @@ class BookDTOTest {
         bookDTO.setIsbn(isbn);
         bookDTO.setGenreId(genreId);
         bookDTO.setAuthorId(authorId);
-        bookDTO.setPublishedDate(null);
+        bookDTO.setPublishDate(null);
 
         Set<ConstraintViolation<BookDTO>> constraintViolations = validator.validate(bookDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -134,7 +134,7 @@ class BookDTOTest {
         bookDTO.setIsbn(null);
         bookDTO.setGenreId(genreId);
         bookDTO.setAuthorId(authorId);
-        bookDTO.setPublishedDate(publishedDate);
+        bookDTO.setPublishDate(publishedDate);
 
         Set<ConstraintViolation<BookDTO>> constraintViolations = validator.validate(bookDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -146,7 +146,7 @@ class BookDTOTest {
         bookDTO.setIsbn("");
         bookDTO.setGenreId(genreId);
         bookDTO.setAuthorId(authorId);
-        bookDTO.setPublishedDate(publishedDate);
+        bookDTO.setPublishDate(publishedDate);
 
         Set<ConstraintViolation<BookDTO>> constraintViolations = validator.validate(bookDTO);
         Assertions.assertEquals(1, constraintViolations.size());

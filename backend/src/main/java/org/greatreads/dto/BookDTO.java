@@ -28,7 +28,7 @@ public class BookDTO {
     private Integer authorId;
 
     @NotNull(message = "Published date ID can not be null")
-    private LocalDateTime publishedDate;
+    private LocalDateTime publishDate;
 
     private String urlLink;
 

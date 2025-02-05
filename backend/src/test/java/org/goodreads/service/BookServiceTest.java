@@ -1,0 +1,287 @@
+package org.goodreads.service;
+
+import org.greatreads.dto.BookDTO;
+import org.greatreads.exception.BookNotFoundException;
+import org.greatreads.exception.GenreNotFoundException;
+import org.greatreads.exception.UserNotFoundException;
+import org.greatreads.model.Book;
+import org.greatreads.model.Genre;
+import org.greatreads.model.User;
+import org.greatreads.repository.BookRepository;
+import org.greatreads.repository.GenreRepository;
+import org.greatreads.repository.UserRepository;
+import org.greatreads.service.impl.BookServiceImpl;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+@ExtendWith(MockitoExtension.class)
+class BookServiceTest {
+    @Mock
+    private BookRepository bookRepository;
+
+    @Mock
+    private GenreRepository genreRepository;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @InjectMocks
+    private BookServiceImpl bookService;
+
+    @Test
+    void testGetAllBooks() {
+        List<Book> books = List.of(new Book(), new Book());
+        Mockito.when(bookRepository.findAll()).thenReturn(books);
+
+        List<Book> result = bookService.getAllBooks();
+        Assertions.assertEquals(books, result);
+    }
+
+    @Test
+    void testBooksByGenre() {
+        Genre genre = new Genre();
+        genre.setName("Mystery");
+        List<Book> books = List.of(new Book(), new Book());
+
+        Mockito.when(genreRepository.findByName(genre.getName())).thenReturn(Optional.of(genre));
+        Mockito.when(bookRepository.findAllByGenre(genre)).thenReturn(books);
+
+        List<Book> result = bookService.getBooksByGenre(genre.getName());
+        Assertions.assertEquals(books, result);
+    }
+
+    @Test
+    void testGetBooksByGenre_GenreNotFound() {
+        String genreName = "invalid";
+        Mockito.when(genreRepository.findByName(genreName)).thenThrow(new GenreNotFoundException(genreName));
+        assertThrows(GenreNotFoundException.class, () -> bookService.getBooksByGenre(genreName));
+    }
+
+    @Test
+    void testAddBook() {
+        User user = new User();
+        user.setId(1);
+        Genre genre = new Genre();
+        genre.setId(2);
+
+        BookDTO bookDTO = new BookDTO();
+        bookDTO.setAuthorId(user.getId());
+        bookDTO.setGenreId(genre.getId());
+        bookDTO.setTitle("Title");
+        bookDTO.setDescription("Description");
+        bookDTO.setIsbn("ISBN");
+        bookDTO.setUrlLink("URL");
+        bookDTO.setPageCover("Page cover");
+        bookDTO.setPublishDate(LocalDateTime.now());
+
+        Mockito.when(userRepository.findById(bookDTO.getAuthorId())).thenReturn(Optional.of(user));
+        Mockito.when(genreRepository.findById(bookDTO.getGenreId())).thenReturn(Optional.of(genre));
+        Mockito.when(bookRepository.save(Mockito.any(Book.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        Book result = bookService.addBook(bookDTO);
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(bookDTO.getTitle(), result.getTitle());
+        Assertions.assertEquals(bookDTO.getDescription(), result.getDescription());
+        Assertions.assertEquals(bookDTO.getIsbn(), result.getIsbn());
+        Assertions.assertEquals(bookDTO.getUrlLink(), result.getUrlLink());
+        Assertions.assertEquals(bookDTO.getPageCover(), result.getPageCover());
+        Assertions.assertEquals(bookDTO.getPublishDate(), result.getPublishDate());
+        Assertions.assertEquals(user, result.getAuthor());
+        Assertions.assertEquals(genre, result.getGenre());
+    }
+
+    @Test
+    void testAddBook_UserNotFound() {
+        User user = new User();
+        user.setId(1);
+        BookDTO bookDTO = new BookDTO();
+
+        Mockito.when(userRepository.findById(bookDTO.getAuthorId())).thenThrow(new UserNotFoundException(user.getId()));
+
+        assertThrows(UserNotFoundException.class, () -> bookService.addBook(bookDTO));
+    }
+
+    @Test
+    void testAddBook_GenreNotFound() {
+        User user = new User();
+        user.setId(1);
+        Genre genre = new Genre();
+        genre.setId(2);
+        BookDTO bookDTO = new BookDTO();
+
+        Mockito.when(userRepository.findById(bookDTO.getAuthorId())).thenReturn(Optional.of(user));
+        Mockito.when(genreRepository.findById(bookDTO.getGenreId()))
+                .thenThrow(new GenreNotFoundException(genre.getId()));
+
+        assertThrows(GenreNotFoundException.class, () -> bookService.addBook(bookDTO));
+    }
+
+    @Test
+    void testUpdateBook() {
+        Book book = new Book();
+        book.setId(1);
+
+        User user = new User();
+        user.setId(1);
+        Genre genre = new Genre();
+        genre.setId(2);
+
+        BookDTO bookDTO = new BookDTO();
+        bookDTO.setAuthorId(user.getId());
+        bookDTO.setGenreId(genre.getId());
+        bookDTO.setTitle("Title");
+        bookDTO.setDescription("Description");
+        bookDTO.setIsbn("ISBN");
+        bookDTO.setUrlLink("URL");
+        bookDTO.setPageCover("Page cover");
+        bookDTO.setPublishDate(LocalDateTime.now());
+
+        Mockito.when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
+        Mockito.when(userRepository.findById(bookDTO.getAuthorId())).thenReturn(Optional.of(user));
+        Mockito.when(genreRepository.findById(bookDTO.getGenreId())).thenReturn(Optional.of(genre));
+        Mockito.when(bookRepository.save(Mockito.any(Book.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        Book result = bookService.updateBook(book.getId(), bookDTO);
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(bookDTO.getTitle(), result.getTitle());
+        Assertions.assertEquals(bookDTO.getDescription(), result.getDescription());
+        Assertions.assertEquals(bookDTO.getIsbn(), result.getIsbn());
+        Assertions.assertEquals(bookDTO.getUrlLink(), result.getUrlLink());
+        Assertions.assertEquals(bookDTO.getPageCover(), result.getPageCover());
+        Assertions.assertEquals(bookDTO.getPublishDate(), result.getPublishDate());
+        Assertions.assertEquals(user, result.getAuthor());
+        Assertions.assertEquals(genre, result.getGenre());
+    }
+
+    @Test
+    void testUpdateBook_EmptyBookDTO() {
+        User user = new User();
+        user.setId(1);
+        Genre genre = new Genre();
+        genre.setId(2);
+
+        Book book = new Book();
+        book.setId(1);
+        book.setAuthor(user);
+        book.setGenre(genre);
+        book.setTitle("Title");
+        book.setDescription("Description");
+        book.setIsbn("ISBN");
+        book.setUrlLink("URL");
+        book.setPageCover("Page cover");
+        book.setPublishDate(LocalDateTime.now());
+
+        BookDTO bookDTO = new BookDTO();
+
+        Mockito.when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
+        Mockito.when(bookRepository.save(Mockito.any(Book.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        Book result = bookService.updateBook(book.getId(), bookDTO);
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(book, result);
+        Assertions.assertEquals(book.getTitle(), result.getTitle());
+        Assertions.assertEquals(book.getDescription(), result.getDescription());
+        Assertions.assertEquals(book.getIsbn(), result.getIsbn());
+        Assertions.assertEquals(book.getUrlLink(), result.getUrlLink());
+        Assertions.assertEquals(book.getPageCover(), result.getPageCover());
+        Assertions.assertEquals(book.getPublishDate(), result.getPublishDate());
+        Assertions.assertEquals(user, result.getAuthor());
+        Assertions.assertEquals(genre, result.getGenre());
+    }
+
+    @Test
+    void testUpdateBook_BookNotFound() {
+        int bookId = 1;
+        BookDTO bookDTO = new BookDTO();
+
+        Mockito.when(bookRepository.findById(bookId)).thenThrow(new BookNotFoundException(bookId));
+        assertThrows(BookNotFoundException.class, () -> bookService.updateBook(bookId, bookDTO));
+    }
+
+    @Test
+    void testUpdateBook_UserNotFound() {
+        Book book = new Book();
+        int bookId = 1;
+        User user = new User();
+        user.setId(1);
+        BookDTO bookDTO = new BookDTO();
+        bookDTO.setAuthorId(user.getId());
+
+
+        Mockito.when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        Mockito.when(userRepository.findById(bookDTO.getAuthorId()))
+                .thenThrow(new UserNotFoundException(bookDTO.getAuthorId()));
+
+        assertThrows(UserNotFoundException.class, () -> bookService.updateBook(bookId, bookDTO));
+    }
+
+    @Test
+    void testUpdateBook_GenreNotFound() {
+        Book book = new Book();
+        int bookId = 1;
+        User user = new User();
+        user.setId(1);
+        Genre genre = new Genre();
+        genre.setId(2);
+        BookDTO bookDTO = new BookDTO();
+        bookDTO.setAuthorId(user.getId());
+        bookDTO.setGenreId(genre.getId());
+
+        Mockito.when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        Mockito.when(userRepository.findById(bookDTO.getAuthorId())).thenReturn(Optional.of(user));
+        Mockito.when(genreRepository.findById(bookDTO.getGenreId()))
+                .thenThrow(new GenreNotFoundException(bookDTO.getGenreId()));
+
+        assertThrows(GenreNotFoundException.class, () -> bookService.updateBook(bookId, bookDTO));
+    }
+
+    @Test
+    void testDeleteBook() {
+        int bookId = 1;
+        Mockito.when(bookRepository.existsById(bookId)).thenReturn(true);
+
+        bookService.deleteBook(bookId);
+        Mockito.verify(bookRepository, Mockito.times(1)).deleteById(bookId);
+    }
+
+    @Test
+    void testDeleteBook_BookNotFound() {
+        int bookId = 1;
+        Mockito.when(bookRepository.existsById(bookId)).thenReturn(false);
+        Assertions.assertThrows(BookNotFoundException.class, () -> bookService.deleteBook(bookId));
+    }
+
+    @Test
+    void testUploadBook() {
+        String url = "URL";
+        Book book = new Book();
+        book.setId(1);
+
+        Mockito.when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
+        bookService.uploadBook(book.getId(), url);
+
+        Assertions.assertEquals(url, book.getUrlLink());
+    }
+
+    @Test
+    void testUploadBook_BookNotFound() {
+        int bookId = 1;
+        String url = "URL";
+        Mockito.when(bookRepository.findById(bookId)).thenThrow(new BookNotFoundException(bookId));
+        Assertions.assertThrows(BookNotFoundException.class, () -> bookService.uploadBook(bookId, url));
+    }
+}
