@@ -124,5 +124,5 @@ INSERT INTO `user_books`(user_id, book_id, is_read, is_wishlist, read_date) VALU
 (3, 3, FALSE, TRUE, NULL);
 
 -- Insert initial reviews
-INSERT INTO `reviews`(user_id, book_id, rating, comment, published_date) VALUES
-(3, 2, 5, 'Excellent!', NULL);
+INSERT INTO `reviews`(user_id, book_id, rating, comment) VALUES
+(3, 2, 5, 'Excellent!');
