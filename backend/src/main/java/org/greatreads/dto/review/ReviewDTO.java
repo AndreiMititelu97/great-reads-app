@@ -1,4 +1,4 @@
-package org.greatreads.dto;
+package org.greatreads.dto.review;
 
 import jakarta.validation.constraints.*;
 import lombok.Getter;
