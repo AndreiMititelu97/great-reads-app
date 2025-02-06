@@ -49,46 +49,47 @@ class ReviewServiceTest {
         user.setId(2);
 
         ReviewDTO reviewDTO = new ReviewDTO();
+        reviewDTO.setBookId(book.getId());
         reviewDTO.setUserId(2);
         reviewDTO.setRating(1);
         reviewDTO.setComment("myComment");
 
-        Mockito.when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
+        Mockito.when(bookRepository.findById(reviewDTO.getBookId())).thenReturn(Optional.of(book));
         Mockito.when(userRepository.findById(reviewDTO.getUserId())).thenReturn(Optional.of(user));
         Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Review review = reviewService.addReview(book.getId(), reviewDTO);
+        ReviewResponseDTO review = reviewService.addReview(reviewDTO);
 
         Assertions.assertNotNull(review);
         Assertions.assertEquals(reviewDTO.getRating(), review.getRating());
         Assertions.assertEquals(reviewDTO.getComment(), review.getComment());
-        Assertions.assertEquals(user, review.getUser());
-        Assertions.assertEquals(book, review.getBook());
+        Assertions.assertEquals(user.getId(), review.getUserId());
+        Assertions.assertEquals(book.getId(), review.getBookId());
     }
 
     @Test
     void testAddReview_BookNotFound() {
         ReviewDTO reviewDTO = new ReviewDTO();
-        int bookId = 1;
-        Mockito.when(bookRepository.findById(bookId)).thenThrow(new BookNotFoundException(bookId));
+        reviewDTO.setBookId(1);
 
-        assertThrows(BookNotFoundException.class, () -> reviewService.addReview(bookId, reviewDTO));
+        Mockito.when(bookRepository.findById(reviewDTO.getBookId()))
+                .thenThrow(new BookNotFoundException(reviewDTO.getBookId()));
+
+        assertThrows(BookNotFoundException.class, () -> reviewService.addReview(reviewDTO));
     }
 
     @Test
     void testAddReview_UserNotFound() {
         Book book = new Book();
-        book.setId(1);
-        int bookId = 1;
-
         ReviewDTO reviewDTO = new ReviewDTO();
-        reviewDTO.setUserId(2);
+        reviewDTO.setUserId(1);
+        reviewDTO.setBookId(2);
 
-        Mockito.when(bookRepository.findById(bookId)).thenReturn(Optional.of(book));
+        Mockito.when(bookRepository.findById(reviewDTO.getBookId())).thenReturn(Optional.of(book));
         Mockito.when(userRepository.findById(reviewDTO.getUserId()))
                 .thenThrow(new UserNotFoundException(reviewDTO.getUserId()));
 
-        assertThrows(UserNotFoundException.class, () -> reviewService.addReview(bookId, reviewDTO));
+        assertThrows(UserNotFoundException.class, () -> reviewService.addReview(reviewDTO));
     }
 
     @Test
@@ -96,11 +97,15 @@ class ReviewServiceTest {
         User user = new User();
         user.setId(25);
 
+        Book book = new Book();
+        book.setId(1);
+
         Review review = new Review();
         review.setId(1);
         review.setUser(user);
         review.setRating(1);
         review.setComment("oldComment");
+        review.setBook(book);
 
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setUserId(25);
@@ -110,12 +115,12 @@ class ReviewServiceTest {
         Mockito.when(reviewRepository.findById(review.getId())).thenReturn(Optional.of(review));
         Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Review updatedReview = reviewService.updateReview(review.getId(), reviewDTO);
+        ReviewResponseDTO updatedReview = reviewService.updateReview(review.getId(), reviewDTO);
 
         Assertions.assertNotNull(updatedReview);
         Assertions.assertEquals(reviewDTO.getRating(), updatedReview.getRating());
         Assertions.assertEquals(reviewDTO.getComment(), updatedReview.getComment());
-        Assertions.assertEquals(user, updatedReview.getUser());
+        Assertions.assertEquals(user.getId(), updatedReview.getUserId());
     }
 
     @Test

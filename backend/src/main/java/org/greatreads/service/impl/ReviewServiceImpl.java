@@ -29,9 +29,9 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public Review addReview(int bookId, ReviewDTO reviewDTO) {
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId));
-
+    public ReviewResponseDTO addReview(ReviewDTO reviewDTO) {
+        Book book = bookRepository.findById(reviewDTO.getBookId())
+                .orElseThrow(() -> new BookNotFoundException(reviewDTO.getBookId()));
         User user = userRepository.findById(reviewDTO.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(reviewDTO.getUserId()));
 
@@ -40,8 +40,9 @@ public class ReviewServiceImpl implements ReviewService {
         review.setComment(reviewDTO.getComment());
         review.setBook(book);
         review.setUser(user);
+        reviewRepository.save(review);
 
-        return reviewRepository.save(review);
+        return reviewToReviewResponseDto(review);
     }
 
     @Override
@@ -52,7 +53,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public Review updateReview(int reviewId, ReviewDTO reviewDTO) {
+    public ReviewResponseDTO updateReview(int reviewId, ReviewDTO reviewDTO) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new ReviewNotFoundException(reviewId));
 
         if (!Objects.equals(review.getUser().getId(), reviewDTO.getUserId())) {
@@ -61,7 +62,9 @@ public class ReviewServiceImpl implements ReviewService {
 
         review.setRating(reviewDTO.getRating());
         review.setComment(reviewDTO.getComment());
-        return reviewRepository.save(review);
+        reviewRepository.save(review);
+
+        return reviewToReviewResponseDto(review);
     }
 
     @Override

@@ -1,13 +1,13 @@
 package org.greatreads.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.greatreads.dto.review.ReviewDTO;
 import org.greatreads.dto.review.ReviewResponseDTO;
 import org.greatreads.service.ReviewService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,6 +16,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReviewController {
     private final ReviewService reviewService;
+
+    @PostMapping
+    public ResponseEntity<ReviewResponseDTO> addReview(@RequestBody @Valid ReviewDTO reviewDTO) {
+        ReviewResponseDTO savedReview = reviewService.addReview(reviewDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedReview);
+    }
 
     @GetMapping("/{reviewId}")
     public ResponseEntity<ReviewResponseDTO> getReview(@PathVariable int reviewId) {
