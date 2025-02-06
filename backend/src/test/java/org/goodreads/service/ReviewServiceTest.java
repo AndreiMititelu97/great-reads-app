@@ -1,6 +1,7 @@
 package org.goodreads.service;
 
-import org.greatreads.dto.ReviewDTO;
+import org.greatreads.dto.review.ReviewDTO;
+import org.greatreads.dto.review.ReviewResponseDTO;
 import org.greatreads.exception.BookNotFoundException;
 import org.greatreads.exception.ReviewNotFoundException;
 import org.greatreads.exception.UserNotFoundException;
@@ -21,6 +22,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
@@ -158,5 +161,193 @@ class ReviewServiceTest {
         Mockito.when(reviewRepository.findById(reviewId)).thenThrow(new ReviewNotFoundException(reviewId));
 
         assertThrows(ReviewNotFoundException.class, () -> reviewService.deleteReview(reviewId));
+    }
+
+    @Test
+    void testGetReview() {
+        User user = new User();
+        user.setId(25);
+
+        Book book = new Book();
+        book.setId(1);
+
+        Review review = new Review();
+        review.setId(1);
+        review.setUser(user);
+        review.setBook(book);
+        review.setRating(2);
+        review.setComment("myComment");
+        review.setPublishedDate(LocalDateTime.now());
+        review.setCreatedAt(LocalDateTime.now());
+        review.setUpdatedAt(LocalDateTime.now());
+
+        Mockito.when(reviewRepository.findById(review.getId())).thenReturn(Optional.of(review));
+        ReviewResponseDTO reviewResponseDTO = reviewService.getReview(review.getId());
+
+        Assertions.assertNotNull(reviewResponseDTO);
+        Assertions.assertEquals(review.getId(), reviewResponseDTO.getId());
+        Assertions.assertEquals(review.getUser().getId(), reviewResponseDTO.getUserId());
+        Assertions.assertEquals(review.getBook().getId(), reviewResponseDTO.getBookId());
+        Assertions.assertEquals(review.getRating(), reviewResponseDTO.getRating());
+        Assertions.assertEquals(review.getComment(), reviewResponseDTO.getComment());
+        Assertions.assertEquals(review.getPublishedDate(), reviewResponseDTO.getPublishedDate());
+        Assertions.assertEquals(review.getCreatedAt(), reviewResponseDTO.getCreatedAt());
+        Assertions.assertEquals(review.getUpdatedAt(), reviewResponseDTO.getUpdatedAt());
+    }
+
+    @Test
+    void testGetReview_ReviewNotFound() {
+        int reviewId = 1;
+        Mockito.when(reviewRepository.findById(reviewId)).thenThrow(new ReviewNotFoundException(reviewId));
+        assertThrows(ReviewNotFoundException.class, () -> reviewService.getReview(reviewId));
+    }
+
+    @Test
+    void testGetAllReviewsByBookId() {
+        User user = new User();
+        user.setId(25);
+        User user2 = new User();
+        user2.setId(21);
+
+        Book book = new Book();
+        book.setId(1);
+
+        Review review = new Review();
+        review.setId(1);
+        review.setUser(user);
+        review.setBook(book);
+        review.setRating(2);
+        review.setComment("myComment");
+        review.setPublishedDate(LocalDateTime.now());
+        review.setCreatedAt(LocalDateTime.now());
+        review.setUpdatedAt(LocalDateTime.now());
+
+        Review review2 = new Review();
+        review2.setId(2);
+        review2.setUser(user2);
+        review2.setBook(book);
+        review2.setRating(5);
+        review2.setComment("myComment2");
+        review2.setPublishedDate(LocalDateTime.now());
+        review2.setCreatedAt(LocalDateTime.now());
+        review2.setUpdatedAt(LocalDateTime.now());
+
+        List<Review> reviews = List.of(review, review2);
+        Mockito.when(reviewRepository.findAllByBook_Id(book.getId())).thenReturn(reviews);
+        List<ReviewResponseDTO> reviewResponseDTOs = reviewService.getAllReviewsByBookId(book.getId());
+
+        Assertions.assertNotNull(reviewResponseDTOs);
+        Assertions.assertEquals(reviews.size(), reviewResponseDTOs.size());
+    }
+
+    @Test
+    void testGetAllReviewsByBookId_EmptyList() {
+        Book book = new Book();
+        book.setId(1);
+
+        Mockito.when(reviewRepository.findAllByBook_Id(book.getId())).thenReturn(List.of());
+        List<ReviewResponseDTO> reviewResponseDTOs = reviewService.getAllReviewsByBookId(book.getId());
+
+        Assertions.assertEquals(List.of(), reviewResponseDTOs);
+    }
+
+    @Test
+    void testGetAllReviewsByUserId() {
+        User user = new User();
+        user.setId(25);
+
+        Book book = new Book();
+        book.setId(1);
+
+        Book book2 = new Book();
+        book2.setId(2);
+
+        Review review = new Review();
+        review.setId(1);
+        review.setUser(user);
+        review.setBook(book);
+        review.setRating(2);
+        review.setComment("myComment");
+        review.setPublishedDate(LocalDateTime.now());
+        review.setCreatedAt(LocalDateTime.now());
+        review.setUpdatedAt(LocalDateTime.now());
+
+        Review review2 = new Review();
+        review2.setId(2);
+        review2.setUser(user);
+        review2.setBook(book2);
+        review2.setRating(5);
+        review2.setComment("myComment2");
+        review2.setPublishedDate(LocalDateTime.now());
+        review2.setCreatedAt(LocalDateTime.now());
+        review2.setUpdatedAt(LocalDateTime.now());
+
+        List<Review> reviews = List.of(review, review2);
+        Mockito.when(reviewRepository.findAllByUser_id(user.getId())).thenReturn(reviews);
+        List<ReviewResponseDTO> reviewResponseDTOs = reviewService.getAllReviewsByUserId(user.getId());
+
+        Assertions.assertNotNull(reviewResponseDTOs);
+        Assertions.assertEquals(reviews.size(), reviewResponseDTOs.size());
+    }
+
+    @Test
+    void testGetAllReviewsByUserId_EmptyList() {
+        User user = new User();
+        user.setId(25);
+
+        Mockito.when(reviewRepository.findAllByUser_id(user.getId())).thenReturn(List.of());
+        List<ReviewResponseDTO> reviewResponseDTOs = reviewService.getAllReviewsByUserId(user.getId());
+
+        Assertions.assertEquals(List.of(), reviewResponseDTOs);
+    }
+
+    @Test
+    void testGetAverageRatingForBook() {
+        User user = new User();
+        user.setId(25);
+        User user2 = new User();
+        user2.setId(21);
+
+        Book book = new Book();
+        book.setId(1);
+
+        Review review = new Review();
+        review.setId(1);
+        review.setUser(user);
+        review.setBook(book);
+        review.setRating(2);
+        review.setComment("myComment");
+        review.setPublishedDate(LocalDateTime.now());
+        review.setCreatedAt(LocalDateTime.now());
+        review.setUpdatedAt(LocalDateTime.now());
+
+        Review review2 = new Review();
+        review2.setId(2);
+        review2.setUser(user2);
+        review2.setBook(book);
+        review2.setRating(5);
+        review2.setComment("myComment2");
+        review2.setPublishedDate(LocalDateTime.now());
+        review2.setCreatedAt(LocalDateTime.now());
+        review2.setUpdatedAt(LocalDateTime.now());
+
+        List<Review> reviews = List.of(review, review2);
+        Mockito.when(reviewRepository.findAllByBook_Id(book.getId())).thenReturn(reviews);
+
+        double expectedResult = (double) (review.getRating() + review2.getRating()) / reviews.size();
+        double result = reviewService.getAverageRatingForBook(book.getId());
+
+        Assertions.assertEquals(expectedResult, result, 0.001);
+    }
+
+    @Test
+    void testGetAverageRatingForBook_NoRating() {
+        int bookId = 1;
+        Mockito.when(reviewRepository.findAllByBook_Id(bookId)).thenReturn(List.of());
+
+        double expectedResult = 0.0;
+        double result = reviewService.getAverageRatingForBook(bookId);
+
+        Assertions.assertEquals(expectedResult, result, 0.001);
     }
 }
