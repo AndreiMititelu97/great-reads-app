@@ -19,8 +19,6 @@ class ReviewResponseDTOTest {
     private static final int VALID_RATING = 1;
     private static final String COMMENT = "comment";
     private static final LocalDateTime PUBLISHED_DATE = LocalDateTime.now();
-    private static final LocalDateTime CREATED_AT = LocalDateTime.now();
-    private static final LocalDateTime UPDATED_AT = LocalDateTime.now();
 
     private Validator validator;
     private ReviewResponseDTO reviewResponseDTO;
@@ -41,8 +39,6 @@ class ReviewResponseDTOTest {
         reviewResponseDTO.setRating(VALID_RATING);
         reviewResponseDTO.setComment(COMMENT);
         reviewResponseDTO.setPublishedDate(PUBLISHED_DATE);
-        reviewResponseDTO.setCreatedAt(CREATED_AT);
-        reviewResponseDTO.setUpdatedAt(UPDATED_AT);
 
         Set<ConstraintViolation<ReviewResponseDTO>> constraintViolations = validator.validate(reviewResponseDTO);
         Assertions.assertTrue(constraintViolations.isEmpty());

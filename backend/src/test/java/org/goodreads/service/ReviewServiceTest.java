@@ -184,8 +184,6 @@ class ReviewServiceTest {
         review.setRating(2);
         review.setComment("myComment");
         review.setPublishedDate(LocalDateTime.now());
-        review.setCreatedAt(LocalDateTime.now());
-        review.setUpdatedAt(LocalDateTime.now());
 
         Mockito.when(reviewRepository.findById(review.getId())).thenReturn(Optional.of(review));
         ReviewResponseDTO reviewResponseDTO = reviewService.getReview(review.getId());
@@ -197,8 +195,6 @@ class ReviewServiceTest {
         Assertions.assertEquals(review.getRating(), reviewResponseDTO.getRating());
         Assertions.assertEquals(review.getComment(), reviewResponseDTO.getComment());
         Assertions.assertEquals(review.getPublishedDate(), reviewResponseDTO.getPublishedDate());
-        Assertions.assertEquals(review.getCreatedAt(), reviewResponseDTO.getCreatedAt());
-        Assertions.assertEquals(review.getUpdatedAt(), reviewResponseDTO.getUpdatedAt());
     }
 
     @Test
@@ -225,8 +221,6 @@ class ReviewServiceTest {
         review.setRating(2);
         review.setComment("myComment");
         review.setPublishedDate(LocalDateTime.now());
-        review.setCreatedAt(LocalDateTime.now());
-        review.setUpdatedAt(LocalDateTime.now());
 
         Review review2 = new Review();
         review2.setId(2);
@@ -235,8 +229,6 @@ class ReviewServiceTest {
         review2.setRating(5);
         review2.setComment("myComment2");
         review2.setPublishedDate(LocalDateTime.now());
-        review2.setCreatedAt(LocalDateTime.now());
-        review2.setUpdatedAt(LocalDateTime.now());
 
         List<Review> reviews = List.of(review, review2);
         Mockito.when(reviewRepository.findAllByBook_Id(book.getId())).thenReturn(reviews);
@@ -275,8 +267,6 @@ class ReviewServiceTest {
         review.setRating(2);
         review.setComment("myComment");
         review.setPublishedDate(LocalDateTime.now());
-        review.setCreatedAt(LocalDateTime.now());
-        review.setUpdatedAt(LocalDateTime.now());
 
         Review review2 = new Review();
         review2.setId(2);
@@ -285,8 +275,6 @@ class ReviewServiceTest {
         review2.setRating(5);
         review2.setComment("myComment2");
         review2.setPublishedDate(LocalDateTime.now());
-        review2.setCreatedAt(LocalDateTime.now());
-        review2.setUpdatedAt(LocalDateTime.now());
 
         List<Review> reviews = List.of(review, review2);
         Mockito.when(reviewRepository.findAllByUser_id(user.getId())).thenReturn(reviews);
@@ -324,8 +312,6 @@ class ReviewServiceTest {
         review.setRating(2);
         review.setComment("myComment");
         review.setPublishedDate(LocalDateTime.now());
-        review.setCreatedAt(LocalDateTime.now());
-        review.setUpdatedAt(LocalDateTime.now());
 
         Review review2 = new Review();
         review2.setId(2);
@@ -334,8 +320,6 @@ class ReviewServiceTest {
         review2.setRating(5);
         review2.setComment("myComment2");
         review2.setPublishedDate(LocalDateTime.now());
-        review2.setCreatedAt(LocalDateTime.now());
-        review2.setUpdatedAt(LocalDateTime.now());
 
         List<Review> reviews = List.of(review, review2);
         Mockito.when(reviewRepository.findAllByBook_Id(book.getId())).thenReturn(reviews);
