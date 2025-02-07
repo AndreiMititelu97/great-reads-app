@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.greatreads.dto.review.ReviewDTO;
 import org.greatreads.dto.review.ReviewResponseDTO;
+import org.greatreads.dto.review.UpdateReviewDTO;
 import org.greatreads.service.ReviewService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,5 +42,17 @@ public class ReviewController {
     @GetMapping("/books/{bookId}/rating")
     public ResponseEntity<Double> getAverageRatingForBook(@PathVariable int bookId) {
         return ResponseEntity.ok(reviewService.getAverageRatingForBook(bookId));
+    }
+
+    @PatchMapping("/{reviewId}")
+    public ResponseEntity<ReviewResponseDTO> updateReview(@PathVariable int reviewId,
+                                                          @RequestBody @Valid UpdateReviewDTO updateReviewDTO) {
+        return ResponseEntity.ok(reviewService.updateReview(reviewId, updateReviewDTO));
+    }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<Void> deleteReview(@PathVariable int reviewId) {
+        reviewService.deleteReview(reviewId);
+        return ResponseEntity.noContent().build();
     }
 }

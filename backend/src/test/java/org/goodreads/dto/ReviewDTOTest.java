@@ -12,10 +12,10 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 
 class ReviewDTOTest {
-    private final int validRating = 1;
-    private final String comment = "comment";
-    private final int userId = 1;
-    private final int bookid = 2;
+    private static final int VALID_RATING = 1;
+    private static final String COMMENT = "comment";
+    private static final int USER_ID = 1;
+    private static final int BOOK_ID = 2;
 
     private Validator validator;
     private ReviewDTO reviewDTO;
@@ -30,10 +30,10 @@ class ReviewDTOTest {
 
     @Test
     void testValidReviewDTO() {
-        reviewDTO.setRating(validRating);
-        reviewDTO.setComment(comment);
-        reviewDTO.setUserId(userId);
-        reviewDTO.setBookId(bookid);
+        reviewDTO.setRating(VALID_RATING);
+        reviewDTO.setComment(COMMENT);
+        reviewDTO.setUserId(USER_ID);
+        reviewDTO.setBookId(BOOK_ID);
 
         Set<ConstraintViolation<ReviewDTO>> constraintViolations = validator.validate(reviewDTO);
         Assertions.assertTrue(constraintViolations.isEmpty());
@@ -42,9 +42,9 @@ class ReviewDTOTest {
     @Test
     void testInvalidRating() {
         reviewDTO.setRating(0);
-        reviewDTO.setComment(comment);
-        reviewDTO.setUserId(userId);
-        reviewDTO.setBookId(bookid);
+        reviewDTO.setComment(COMMENT);
+        reviewDTO.setUserId(USER_ID);
+        reviewDTO.setBookId(BOOK_ID);
 
         Set<ConstraintViolation<ReviewDTO>> constraintViolations = validator.validate(reviewDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -53,9 +53,9 @@ class ReviewDTOTest {
     @Test
     void testNullRating() {
         reviewDTO.setRating(null);
-        reviewDTO.setComment(comment);
-        reviewDTO.setUserId(userId);
-        reviewDTO.setBookId(bookid);
+        reviewDTO.setComment(COMMENT);
+        reviewDTO.setUserId(USER_ID);
+        reviewDTO.setBookId(BOOK_ID);
 
         Set<ConstraintViolation<ReviewDTO>> constraintViolations = validator.validate(reviewDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -63,9 +63,9 @@ class ReviewDTOTest {
 
     @Test
     void testMaxCommentLength() {
-        reviewDTO.setRating(validRating);
-        reviewDTO.setUserId(userId);
-        reviewDTO.setBookId(bookid);
+        reviewDTO.setRating(VALID_RATING);
+        reviewDTO.setUserId(USER_ID);
+        reviewDTO.setBookId(BOOK_ID);
         reviewDTO.setComment(" ".repeat(510));
 
         Set<ConstraintViolation<ReviewDTO>> constraintViolations = validator.validate(reviewDTO);
@@ -74,10 +74,10 @@ class ReviewDTOTest {
 
     @Test
     void testNullUserId() {
-        reviewDTO.setRating(validRating);
-        reviewDTO.setComment(comment);
+        reviewDTO.setRating(VALID_RATING);
+        reviewDTO.setComment(COMMENT);
         reviewDTO.setUserId(null);
-        reviewDTO.setBookId(bookid);
+        reviewDTO.setBookId(BOOK_ID);
 
         Set<ConstraintViolation<ReviewDTO>> constraintViolations = validator.validate(reviewDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -85,9 +85,9 @@ class ReviewDTOTest {
 
     @Test
     void testNullBookId() {
-        reviewDTO.setRating(validRating);
-        reviewDTO.setComment(comment);
-        reviewDTO.setUserId(userId);
+        reviewDTO.setRating(VALID_RATING);
+        reviewDTO.setComment(COMMENT);
+        reviewDTO.setUserId(USER_ID);
         reviewDTO.setBookId(null);
 
         Set<ConstraintViolation<ReviewDTO>> constraintViolations = validator.validate(reviewDTO);

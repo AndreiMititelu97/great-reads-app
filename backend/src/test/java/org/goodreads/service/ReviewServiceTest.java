@@ -2,6 +2,7 @@ package org.goodreads.service;
 
 import org.greatreads.dto.review.ReviewDTO;
 import org.greatreads.dto.review.ReviewResponseDTO;
+import org.greatreads.dto.review.UpdateReviewDTO;
 import org.greatreads.exception.BookNotFoundException;
 import org.greatreads.exception.ReviewNotFoundException;
 import org.greatreads.exception.UserNotFoundException;
@@ -107,35 +108,35 @@ class ReviewServiceTest {
         review.setComment("oldComment");
         review.setBook(book);
 
-        ReviewDTO reviewDTO = new ReviewDTO();
-        reviewDTO.setUserId(25);
-        reviewDTO.setRating(5);
-        reviewDTO.setComment("newComment");
+        UpdateReviewDTO updateReviewDTO = new UpdateReviewDTO();
+        updateReviewDTO.setUserId(25);
+        updateReviewDTO.setRating(5);
+        updateReviewDTO.setComment("newComment");
 
         Mockito.when(reviewRepository.findById(review.getId())).thenReturn(Optional.of(review));
         Mockito.when(reviewRepository.save(Mockito.any(Review.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        ReviewResponseDTO updatedReview = reviewService.updateReview(review.getId(), reviewDTO);
+        ReviewResponseDTO updatedReview = reviewService.updateReview(review.getId(), updateReviewDTO);
 
         Assertions.assertNotNull(updatedReview);
-        Assertions.assertEquals(reviewDTO.getRating(), updatedReview.getRating());
-        Assertions.assertEquals(reviewDTO.getComment(), updatedReview.getComment());
+        Assertions.assertEquals(updateReviewDTO.getRating(), updatedReview.getRating());
+        Assertions.assertEquals(updateReviewDTO.getComment(), updatedReview.getComment());
         Assertions.assertEquals(user.getId(), updatedReview.getUserId());
     }
 
     @Test
     void testUpdateReview_ReviewNotFound() {
-        ReviewDTO reviewDTO = new ReviewDTO();
+        UpdateReviewDTO updateReviewDTO = new UpdateReviewDTO();
         int reviewId = 1;
 
         Mockito.when(reviewRepository.findById(reviewId)).thenThrow(new ReviewNotFoundException(reviewId));
-        assertThrows(ReviewNotFoundException.class, () -> reviewService.updateReview(reviewId, reviewDTO));
+        assertThrows(ReviewNotFoundException.class, () -> reviewService.updateReview(reviewId, updateReviewDTO));
     }
 
     @Test
     void testUpdateReview_UserNotAllowed() {
-        ReviewDTO reviewDTO = new ReviewDTO();
-        reviewDTO.setUserId(2);
+        UpdateReviewDTO updateReviewDTO = new UpdateReviewDTO();
+        updateReviewDTO.setUserId(2);
 
         User user = new User();
         user.setId(25);
@@ -146,7 +147,7 @@ class ReviewServiceTest {
         int reviewId = 1;
 
         Mockito.when(reviewRepository.findById(review.getId())).thenReturn(Optional.of(review));
-        assertThrows(IllegalArgumentException.class, () -> reviewService.updateReview(reviewId, reviewDTO));
+        assertThrows(IllegalArgumentException.class, () -> reviewService.updateReview(reviewId, updateReviewDTO));
     }
 
     @Test

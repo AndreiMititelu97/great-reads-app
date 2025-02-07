@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.greatreads.dto.review.ReviewDTO;
 import org.greatreads.dto.review.ReviewResponseDTO;
+import org.greatreads.dto.review.UpdateReviewDTO;
 import org.greatreads.exception.BookNotFoundException;
 import org.greatreads.exception.ReviewNotFoundException;
 import org.greatreads.exception.UserNotFoundException;
@@ -53,17 +54,21 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional
-    public ReviewResponseDTO updateReview(int reviewId, ReviewDTO reviewDTO) {
+    public ReviewResponseDTO updateReview(int reviewId, UpdateReviewDTO updateReviewDTO) {
         Review review = reviewRepository.findById(reviewId).orElseThrow(() -> new ReviewNotFoundException(reviewId));
 
-        if (!Objects.equals(review.getUser().getId(), reviewDTO.getUserId())) {
+        if (!Objects.equals(review.getUser().getId(), updateReviewDTO.getUserId())) {
             throw new IllegalArgumentException("This user is not allowed to update this review.");
         }
 
-        review.setRating(reviewDTO.getRating());
-        review.setComment(reviewDTO.getComment());
-        reviewRepository.save(review);
+        if (updateReviewDTO.getRating() != null) {
+            review.setRating(updateReviewDTO.getRating());
+        }
+        if (updateReviewDTO.getComment() != null) {
+            review.setComment(updateReviewDTO.getComment());
+        }
 
+        reviewRepository.save(review);
         return reviewToReviewResponseDto(review);
     }
 
@@ -98,18 +103,8 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public double getAverageRatingForBook(int bookId) {
-        List <ReviewResponseDTO> reviewResponseDTOS = getAllReviewsByBookId(bookId);
-        if (reviewResponseDTOS.isEmpty()) {
-            return 0.0;
-        }
-
-        int length = reviewResponseDTOS.size();
-        int sum = 0;
-        for (ReviewResponseDTO reviewResponseDTO : reviewResponseDTOS) {
-            sum += reviewResponseDTO.getRating();
-        }
-
-        return (double) sum / length;
+        List <ReviewResponseDTO> reviews = getAllReviewsByBookId(bookId);
+        return calculateAverageRating(reviews);
     }
 
     private ReviewResponseDTO reviewToReviewResponseDto(Review review) {
@@ -124,5 +119,18 @@ public class ReviewServiceImpl implements ReviewService {
         reviewResponseDTO.setUpdatedAt(review.getUpdatedAt());
 
         return reviewResponseDTO;
+    }
+
+    private double calculateAverageRating(List<ReviewResponseDTO> reviews) {
+        if (reviews.isEmpty()) {
+            return 0.0;
+        }
+
+        int length = reviews.size();
+        int sum = 0;
+        for (ReviewResponseDTO reviewResponseDTO : reviews) {
+            sum += reviewResponseDTO.getRating();
+        }
+        return (double) sum / length;
     }
 }
