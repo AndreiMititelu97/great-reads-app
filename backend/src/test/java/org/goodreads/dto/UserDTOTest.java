@@ -12,11 +12,11 @@ import org.junit.jupiter.api.Test;
 import java.util.Set;
 
 class UserDTOTest {
-    private final String validEmail = "valid@email.com";
-    private final String validPassword = "ag5!Wc1I*Kq2";
-    private final String firstName = "John";
-    private final String lastName = "Wick";
-    private final int roleId = 1;
+    private static final String VALID_EMAIL = "valid@email.com";
+    private static final String VALID_PASSWORD = "ag5!Wc1I*Kq2";
+    private static final String FIRST_NAME = "John";
+    private static final String LAST_NAME = "Wick";
+    private static final int ROLE_ID = 1;
 
     private Validator validator;
     private UserDTO userDTO;
@@ -31,11 +31,11 @@ class UserDTOTest {
 
     @Test
     void testValidUserDTO() {
-        userDTO.setEmail(validEmail);
-        userDTO.setPassword(validPassword);
-        userDTO.setFirstName(firstName);
-        userDTO.setLastName(lastName);
-        userDTO.setRoleId(roleId);
+        userDTO.setEmail(VALID_EMAIL);
+        userDTO.setPassword(VALID_PASSWORD);
+        userDTO.setFirstName(FIRST_NAME);
+        userDTO.setLastName(LAST_NAME);
+        userDTO.setRoleId(ROLE_ID);
 
         Set<ConstraintViolation<UserDTO>> constraintViolations = validator.validate(userDTO);
         Assertions.assertTrue(constraintViolations.isEmpty());
@@ -45,10 +45,10 @@ class UserDTOTest {
     void testInvalidEmail() {
         String invalidEmail = "invalidEmail";
         userDTO.setEmail(invalidEmail);
-        userDTO.setPassword(validPassword);
-        userDTO.setFirstName(firstName);
-        userDTO.setLastName(lastName);
-        userDTO.setRoleId(roleId);
+        userDTO.setPassword(VALID_PASSWORD);
+        userDTO.setFirstName(FIRST_NAME);
+        userDTO.setLastName(LAST_NAME);
+        userDTO.setRoleId(ROLE_ID);
 
         Set<ConstraintViolation<UserDTO>> constraintViolations = validator.validate(userDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -56,10 +56,10 @@ class UserDTOTest {
 
     @Test
     void testBlankEmail() {
-        userDTO.setPassword(validPassword);
-        userDTO.setFirstName(firstName);
-        userDTO.setLastName(lastName);
-        userDTO.setRoleId(roleId);
+        userDTO.setPassword(VALID_PASSWORD);
+        userDTO.setFirstName(FIRST_NAME);
+        userDTO.setLastName(LAST_NAME);
+        userDTO.setRoleId(ROLE_ID);
 
         Set<ConstraintViolation<UserDTO>> constraintViolations = validator.validate(userDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -68,10 +68,10 @@ class UserDTOTest {
     @Test
     void testNullEmail() {
         userDTO.setEmail(null);
-        userDTO.setPassword(validPassword);
-        userDTO.setFirstName(firstName);
-        userDTO.setLastName(lastName);
-        userDTO.setRoleId(roleId);
+        userDTO.setPassword(VALID_PASSWORD);
+        userDTO.setFirstName(FIRST_NAME);
+        userDTO.setLastName(LAST_NAME);
+        userDTO.setRoleId(ROLE_ID);
 
         Set<ConstraintViolation<UserDTO>> constraintViolations = validator.validate(userDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -80,11 +80,11 @@ class UserDTOTest {
     @Test
     void testInvalidPassword() {
         String invalidPassword = "123";
-        userDTO.setEmail(validEmail);
+        userDTO.setEmail(VALID_EMAIL);
         userDTO.setPassword(invalidPassword);
-        userDTO.setFirstName(firstName);
-        userDTO.setLastName(lastName);
-        userDTO.setRoleId(roleId);
+        userDTO.setFirstName(FIRST_NAME);
+        userDTO.setLastName(LAST_NAME);
+        userDTO.setRoleId(ROLE_ID);
 
         Set<ConstraintViolation<UserDTO>> constraintViolations = validator.validate(userDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -92,10 +92,10 @@ class UserDTOTest {
 
     @Test
     void testBlankPassword() {
-        userDTO.setEmail(validEmail);
-        userDTO.setFirstName(firstName);
-        userDTO.setLastName(lastName);
-        userDTO.setRoleId(roleId);
+        userDTO.setEmail(VALID_EMAIL);
+        userDTO.setFirstName(FIRST_NAME);
+        userDTO.setLastName(LAST_NAME);
+        userDTO.setRoleId(ROLE_ID);
 
         Set<ConstraintViolation<UserDTO>> constraintViolations = validator.validate(userDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -103,11 +103,11 @@ class UserDTOTest {
 
     @Test
     void testNullPassword() {
-        userDTO.setEmail(validEmail);
+        userDTO.setEmail(VALID_EMAIL);
         userDTO.setPassword(null);
-        userDTO.setFirstName(firstName);
-        userDTO.setLastName(lastName);
-        userDTO.setRoleId(roleId);
+        userDTO.setFirstName(FIRST_NAME);
+        userDTO.setLastName(LAST_NAME);
+        userDTO.setRoleId(ROLE_ID);
 
         Set<ConstraintViolation<UserDTO>> constraintViolations = validator.validate(userDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -115,11 +115,11 @@ class UserDTOTest {
 
     @Test
     void testNullFirstName() {
-        userDTO.setEmail(validEmail);
-        userDTO.setPassword(validPassword);
+        userDTO.setEmail(VALID_EMAIL);
+        userDTO.setPassword(VALID_PASSWORD);
         userDTO.setFirstName(null);
-        userDTO.setLastName(lastName);
-        userDTO.setRoleId(roleId);
+        userDTO.setLastName(LAST_NAME);
+        userDTO.setRoleId(ROLE_ID);
 
         Set<ConstraintViolation<UserDTO>> constraintViolations = validator.validate(userDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -127,11 +127,11 @@ class UserDTOTest {
 
     @Test
     void testBlankFirstName() {
-        userDTO.setEmail(validEmail);
-        userDTO.setPassword(validPassword);
+        userDTO.setEmail(VALID_EMAIL);
+        userDTO.setPassword(VALID_PASSWORD);
         userDTO.setFirstName("");
-        userDTO.setLastName(lastName);
-        userDTO.setRoleId(roleId);
+        userDTO.setLastName(LAST_NAME);
+        userDTO.setRoleId(ROLE_ID);
 
         Set<ConstraintViolation<UserDTO>> constraintViolations = validator.validate(userDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -139,11 +139,11 @@ class UserDTOTest {
 
     @Test
     void testNullLastName() {
-        userDTO.setEmail(validEmail);
-        userDTO.setPassword(validPassword);
-        userDTO.setFirstName(firstName);
+        userDTO.setEmail(VALID_EMAIL);
+        userDTO.setPassword(VALID_PASSWORD);
+        userDTO.setFirstName(FIRST_NAME);
         userDTO.setLastName(null);
-        userDTO.setRoleId(roleId);
+        userDTO.setRoleId(ROLE_ID);
 
         Set<ConstraintViolation<UserDTO>> constraintViolations = validator.validate(userDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -151,11 +151,11 @@ class UserDTOTest {
 
     @Test
     void testBlankLastName() {
-        userDTO.setEmail(validEmail);
-        userDTO.setPassword(validPassword);
-        userDTO.setFirstName(firstName);
+        userDTO.setEmail(VALID_EMAIL);
+        userDTO.setPassword(VALID_PASSWORD);
+        userDTO.setFirstName(FIRST_NAME);
         userDTO.setLastName("");
-        userDTO.setRoleId(roleId);
+        userDTO.setRoleId(ROLE_ID);
 
         Set<ConstraintViolation<UserDTO>> constraintViolations = validator.validate(userDTO);
         Assertions.assertEquals(1, constraintViolations.size());
@@ -163,10 +163,10 @@ class UserDTOTest {
 
     @Test
     void testNegativeRoleId() {
-        userDTO.setEmail(validEmail);
-        userDTO.setPassword(validPassword);
-        userDTO.setFirstName(firstName);
-        userDTO.setLastName(lastName);
+        userDTO.setEmail(VALID_EMAIL);
+        userDTO.setPassword(VALID_PASSWORD);
+        userDTO.setFirstName(FIRST_NAME);
+        userDTO.setLastName(LAST_NAME);
         userDTO.setRoleId(-1);
 
         Set<ConstraintViolation<UserDTO>> constraintViolations = validator.validate(userDTO);
@@ -175,10 +175,10 @@ class UserDTOTest {
 
     @Test
     void testNullRoleId() {
-        userDTO.setEmail(validEmail);
-        userDTO.setPassword(validPassword);
-        userDTO.setFirstName(firstName);
-        userDTO.setLastName(lastName);
+        userDTO.setEmail(VALID_EMAIL);
+        userDTO.setPassword(VALID_PASSWORD);
+        userDTO.setFirstName(FIRST_NAME);
+        userDTO.setLastName(LAST_NAME);
         userDTO.setRoleId(null);
 
         Set<ConstraintViolation<UserDTO>> constraintViolations = validator.validate(userDTO);
