@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class Book {
     private User author;
 
     @Column(name = "published_date", nullable = false)
-    private LocalDateTime publishDate;
+    private LocalDate publishDate;
 
     @Column(name = "url_link")
     private String urlLink;

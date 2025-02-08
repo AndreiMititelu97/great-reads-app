@@ -1,12 +1,13 @@
-package org.greatreads.dto;
+package org.greatreads.dto.book;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -28,7 +29,8 @@ public class BookDTO {
     private Integer authorId;
 
     @NotNull(message = "Published date ID can not be null")
-    private LocalDateTime publishDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate publishDate;
 
     private String urlLink;
 

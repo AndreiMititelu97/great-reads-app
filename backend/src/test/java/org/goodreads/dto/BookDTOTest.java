@@ -4,12 +4,12 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import org.greatreads.dto.BookDTO;
+import org.greatreads.dto.book.BookDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Set;
 
 class BookDTOTest {
@@ -18,7 +18,7 @@ class BookDTOTest {
     private static final String TITLE = "title";
     private static final Integer GENRE_ID = 1;
     private static final Integer AUTHOR_ID = 2;
-    private static final LocalDateTime PUBLISHED_DATE = LocalDateTime.now();
+    private static final LocalDate PUBLISHED_DATE = LocalDate.now();
 
     private BookDTO bookDTO;
     private Validator validator;

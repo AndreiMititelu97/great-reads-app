@@ -47,7 +47,7 @@ CREATE TABLE `books`(
 	`genre_id` INTEGER NOT NULL,
 	`ISBN` VARCHAR(50) UNIQUE NOT NULL,
 	`user_id` INTEGER NOT NULL,
-	`published_date` DATETIME NOT NULL,
+	`published_date` DATE NOT NULL,
 	`url_link` VARCHAR(255),
 	`is_approved` BOOLEAN DEFAULT FALSE,
 	`page_cover` VARCHAR(255),
