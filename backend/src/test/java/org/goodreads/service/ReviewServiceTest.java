@@ -297,44 +297,25 @@ class ReviewServiceTest {
 
     @Test
     void testGetAverageRatingForBook() {
-        User user = new User();
-        user.setId(25);
-        User user2 = new User();
-        user2.setId(21);
-
-        Book book = new Book();
-        book.setId(1);
-
         Review review = new Review();
-        review.setId(1);
-        review.setUser(user);
-        review.setBook(book);
         review.setRating(2);
-        review.setComment("myComment");
-        review.setPublishedDate(LocalDateTime.now());
 
         Review review2 = new Review();
-        review2.setId(2);
-        review2.setUser(user2);
-        review2.setBook(book);
         review2.setRating(5);
-        review2.setComment("myComment2");
-        review2.setPublishedDate(LocalDateTime.now());
 
+        int bookId = 1;
         List<Review> reviews = List.of(review, review2);
-        Mockito.when(reviewRepository.findAllByBook_Id(book.getId())).thenReturn(reviews);
 
         double expectedResult = (double) (review.getRating() + review2.getRating()) / reviews.size();
-        double result = reviewService.getAverageRatingForBook(book.getId());
+        Mockito.when(reviewRepository.findAverageByBook_Id(bookId)).thenReturn(expectedResult);
 
+        double result = reviewService.getAverageRatingForBook(bookId);
         Assertions.assertEquals(expectedResult, result, 0.001);
     }
 
     @Test
     void testGetAverageRatingForBook_NoRating() {
         int bookId = 1;
-        Mockito.when(reviewRepository.findAllByBook_Id(bookId)).thenReturn(List.of());
-
         double expectedResult = 0.0;
         double result = reviewService.getAverageRatingForBook(bookId);
 

@@ -103,8 +103,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public double getAverageRatingForBook(int bookId) {
-        List <ReviewResponseDTO> reviews = getAllReviewsByBookId(bookId);
-        return calculateAverageRating(reviews);
+        return reviewRepository.findAverageByBook_Id(bookId);
     }
 
     private ReviewResponseDTO reviewToReviewResponseDto(Review review) {
@@ -117,18 +116,5 @@ public class ReviewServiceImpl implements ReviewService {
         reviewResponseDTO.setPublishedDate(review.getPublishedDate());
 
         return reviewResponseDTO;
-    }
-
-    private double calculateAverageRating(List<ReviewResponseDTO> reviews) {
-        if (reviews.isEmpty()) {
-            return 0.0;
-        }
-
-        int length = reviews.size();
-        int sum = 0;
-        for (ReviewResponseDTO reviewResponseDTO : reviews) {
-            sum += reviewResponseDTO.getRating();
-        }
-        return (double) sum / length;
     }
 }
