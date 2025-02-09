@@ -1,4 +1,4 @@
-package org.goodreads.dto;
+package org.goodreads.dto.review;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
