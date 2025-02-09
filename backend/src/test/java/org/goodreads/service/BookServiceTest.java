@@ -1,6 +1,7 @@
 package org.goodreads.service;
 
-import org.greatreads.dto.BookDTO;
+import org.greatreads.dto.book.BookDTO;
+import org.greatreads.dto.book.BookResponseDTO;
 import org.greatreads.exception.BookNotFoundException;
 import org.greatreads.exception.GenreNotFoundException;
 import org.greatreads.exception.UserNotFoundException;
@@ -9,6 +10,7 @@ import org.greatreads.model.Genre;
 import org.greatreads.model.User;
 import org.greatreads.repository.BookRepository;
 import org.greatreads.repository.GenreRepository;
+import org.greatreads.repository.ReviewRepository;
 import org.greatreads.repository.UserRepository;
 import org.greatreads.service.impl.BookServiceImpl;
 import org.junit.jupiter.api.Assertions;
@@ -19,7 +21,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,29 +38,60 @@ class BookServiceTest {
     @Mock
     private UserRepository userRepository;
 
+    @Mock
+    private ReviewRepository reviewRepository;
+
     @InjectMocks
     private BookServiceImpl bookService;
 
     @Test
-    void testGetAllBooks() {
-        List<Book> books = List.of(new Book(), new Book());
-        Mockito.when(bookRepository.findAll()).thenReturn(books);
+    void testGetBooks() {
+        Genre genre = new Genre();
+        genre.setId(1);
+        User user = new User();
+        user.setId(1);
 
-        List<Book> result = bookService.getAllBooks();
-        Assertions.assertEquals(books, result);
+        Book book1 = new Book();
+        book1.setGenre(genre);
+        book1.setAuthor(user);
+
+        Book book2 = new Book();
+        book2.setGenre(genre);
+        book2.setAuthor(user);
+
+        List<Book> books = List.of(book1, book2);
+        Mockito.when(bookRepository.findAll()).thenReturn(books);
+        Mockito.when(reviewRepository.countByBook_Id(book1.getId())).thenReturn(1);
+        Mockito.when(reviewRepository.findAverageByBook_Id(book1.getId())).thenReturn(1.0);
+
+        List<BookResponseDTO> result = bookService.getBooks();
+        Assertions.assertEquals(books.size(), result.size());
     }
 
     @Test
     void testBooksByGenre() {
+        User user = new User();
+        user.setId(1);
+
         Genre genre = new Genre();
+        genre.setId(1);
         genre.setName("Mystery");
-        List<Book> books = List.of(new Book(), new Book());
+
+        Book book1 = new Book();
+        book1.setGenre(genre);
+        book1.setAuthor(user);
+
+        Book book2 = new Book();
+        book2.setGenre(genre);
+        book2.setAuthor(user);
+
+        List<Book> books = List.of(book1, book2);
 
         Mockito.when(genreRepository.findByName(genre.getName())).thenReturn(Optional.of(genre));
         Mockito.when(bookRepository.findAllByGenre(genre)).thenReturn(books);
 
-        List<Book> result = bookService.getBooksByGenre(genre.getName());
-        Assertions.assertEquals(books, result);
+        List<BookResponseDTO> result = bookService.getBooksByGenre(genre.getName());
+        Assertions.assertEquals(books.size(), result.size());
     }
 
     @Test
@@ -83,14 +116,14 @@ class BookServiceTest {
         bookDTO.setIsbn("ISBN");
         bookDTO.setUrlLink("URL");
         bookDTO.setPageCover("Page cover");
-        bookDTO.setPublishDate(LocalDateTime.now());
+        bookDTO.setPublishDate(LocalDate.now());
 
         Mockito.when(userRepository.findById(bookDTO.getAuthorId())).thenReturn(Optional.of(user));
         Mockito.when(genreRepository.findById(bookDTO.getGenreId())).thenReturn(Optional.of(genre));
         Mockito.when(bookRepository.save(Mockito.any(Book.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        Book result = bookService.addBook(bookDTO);
+        BookResponseDTO result = bookService.addBook(bookDTO);
         Assertions.assertNotNull(result);
         Assertions.assertEquals(bookDTO.getTitle(), result.getTitle());
         Assertions.assertEquals(bookDTO.getDescription(), result.getDescription());
@@ -98,8 +131,8 @@ class BookServiceTest {
         Assertions.assertEquals(bookDTO.getUrlLink(), result.getUrlLink());
         Assertions.assertEquals(bookDTO.getPageCover(), result.getPageCover());
         Assertions.assertEquals(bookDTO.getPublishDate(), result.getPublishDate());
-        Assertions.assertEquals(user, result.getAuthor());
-        Assertions.assertEquals(genre, result.getGenre());
+        Assertions.assertEquals(user.getId(), result.getAuthor().getId());
+        Assertions.assertEquals(genre.getId(), result.getGenre().getId());
     }
 
     @Test
@@ -146,7 +179,7 @@ class BookServiceTest {
         bookDTO.setIsbn("ISBN");
         bookDTO.setUrlLink("URL");
         bookDTO.setPageCover("Page cover");
-        bookDTO.setPublishDate(LocalDateTime.now());
+        bookDTO.setPublishDate(LocalDate.now());
 
         Mockito.when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
         Mockito.when(userRepository.findById(bookDTO.getAuthorId())).thenReturn(Optional.of(user));
@@ -154,7 +187,7 @@ class BookServiceTest {
         Mockito.when(bookRepository.save(Mockito.any(Book.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        Book result = bookService.updateBook(book.getId(), bookDTO);
+        BookResponseDTO result = bookService.updateBook(book.getId(), bookDTO);
         Assertions.assertNotNull(result);
         Assertions.assertEquals(bookDTO.getTitle(), result.getTitle());
         Assertions.assertEquals(bookDTO.getDescription(), result.getDescription());
@@ -162,8 +195,8 @@ class BookServiceTest {
         Assertions.assertEquals(bookDTO.getUrlLink(), result.getUrlLink());
         Assertions.assertEquals(bookDTO.getPageCover(), result.getPageCover());
         Assertions.assertEquals(bookDTO.getPublishDate(), result.getPublishDate());
-        Assertions.assertEquals(user, result.getAuthor());
-        Assertions.assertEquals(genre, result.getGenre());
+        Assertions.assertEquals(user.getId(), result.getAuthor().getId());
+        Assertions.assertEquals(genre.getId(), result.getGenre().getId());
     }
 
     @Test
@@ -182,7 +215,7 @@ class BookServiceTest {
         book.setIsbn("ISBN");
         book.setUrlLink("URL");
         book.setPageCover("Page cover");
-        book.setPublishDate(LocalDateTime.now());
+        book.setPublishDate(LocalDate.now());
 
         BookDTO bookDTO = new BookDTO();
 
@@ -190,17 +223,16 @@ class BookServiceTest {
         Mockito.when(bookRepository.save(Mockito.any(Book.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        Book result = bookService.updateBook(book.getId(), bookDTO);
+        BookResponseDTO result = bookService.updateBook(book.getId(), bookDTO);
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(book, result);
         Assertions.assertEquals(book.getTitle(), result.getTitle());
         Assertions.assertEquals(book.getDescription(), result.getDescription());
         Assertions.assertEquals(book.getIsbn(), result.getIsbn());
         Assertions.assertEquals(book.getUrlLink(), result.getUrlLink());
         Assertions.assertEquals(book.getPageCover(), result.getPageCover());
         Assertions.assertEquals(book.getPublishDate(), result.getPublishDate());
-        Assertions.assertEquals(user, result.getAuthor());
-        Assertions.assertEquals(genre, result.getGenre());
+        Assertions.assertEquals(user.getId(), result.getAuthor().getId());
+        Assertions.assertEquals(genre.getId(), result.getGenre().getId());
     }
 
     @Test

@@ -2,7 +2,10 @@ package org.greatreads.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.greatreads.dto.BookDTO;
+import org.greatreads.dto.book.BookDTO;
+import org.greatreads.dto.book.BookResponseDTO;
+import org.greatreads.dto.genre.GenreResponseDTO;
+import org.greatreads.dto.user.UserSimpleResponseDTO;
 import org.greatreads.exception.BookNotFoundException;
 import org.greatreads.exception.GenreNotFoundException;
 import org.greatreads.exception.UserNotFoundException;
@@ -11,10 +14,12 @@ import org.greatreads.model.Genre;
 import org.greatreads.model.User;
 import org.greatreads.repository.BookRepository;
 import org.greatreads.repository.GenreRepository;
+import org.greatreads.repository.ReviewRepository;
 import org.greatreads.repository.UserRepository;
 import org.greatreads.service.BookService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,21 +28,36 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final GenreRepository genreRepository;
     private final UserRepository userRepository;
+    private final ReviewRepository reviewRepository;
 
     @Override
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+    public List<BookResponseDTO> getBooks() {
+        List<Book> books =  bookRepository.findAll();
+        List<BookResponseDTO> responseDTOList = new ArrayList<>();
+
+        for (Book book : books) {
+            responseDTOList.add(bookToDto(book));
+        }
+
+        return responseDTOList;
     }
 
     @Override
-    public List<Book> getBooksByGenre(String genreName) {
+    public List<BookResponseDTO> getBooksByGenre(String genreName) {
         Genre genre = genreRepository.findByName(genreName).orElseThrow(() -> new GenreNotFoundException(genreName));
-        return bookRepository.findAllByGenre(genre);
+        List<Book> books =  bookRepository.findAllByGenre(genre);
+        List<BookResponseDTO> responseDTOList = new ArrayList<>();
+
+        for (Book book : books) {
+            responseDTOList.add(bookToDto(book));
+        }
+
+        return responseDTOList;
     }
 
     @Override
     @Transactional
-    public Book addBook(BookDTO bookDTO) {
+    public BookResponseDTO addBook(BookDTO bookDTO) {
         User user = userRepository.findById(bookDTO.getAuthorId())
                 .orElseThrow(() -> new UserNotFoundException(bookDTO.getAuthorId()));
         Genre genre = genreRepository.findById(bookDTO.getGenreId())
@@ -54,12 +74,13 @@ public class BookServiceImpl implements BookService {
         book.setApproved(bookDTO.getIsApproved());
         book.setPageCover(bookDTO.getPageCover());
 
-        return bookRepository.save(book);
+        bookRepository.save(book);
+        return bookToDto(book);
     }
 
     @Override
     @Transactional
-    public Book updateBook(int bookId, BookDTO bookDTO) {
+    public BookResponseDTO updateBook(int bookId, BookDTO bookDTO) {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId));
 
         if (bookDTO.getAuthorId() != null) {
@@ -94,7 +115,9 @@ public class BookServiceImpl implements BookService {
         if (bookDTO.getPageCover() != null) {
             book.setPageCover(bookDTO.getPageCover());
         }
-        return bookRepository.save(book);
+
+        bookRepository.save(book);
+        return bookToDto(book);
     }
 
     @Override
@@ -112,5 +135,36 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId));
         book.setUrlLink(url);
         bookRepository.save(book);
+    }
+
+    private BookResponseDTO bookToDto(Book book) {
+        Genre genre = book.getGenre();
+        GenreResponseDTO genreDTO = new GenreResponseDTO();
+        genreDTO.setId(genre.getId());
+        genreDTO.setName(genre.getName());
+
+        User user = book.getAuthor();
+        UserSimpleResponseDTO userDTO = new UserSimpleResponseDTO();
+        userDTO.setId(user.getId());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setFirstName(user.getFirstName());
+        userDTO.setLastName(user.getLastName());
+        userDTO.setAvatar(user.getAvatar());
+
+        BookResponseDTO bookDTO = new BookResponseDTO();
+        bookDTO.setId(book.getId());
+        bookDTO.setTitle(book.getTitle());
+        bookDTO.setDescription(book.getDescription());
+        bookDTO.setGenre(genreDTO);
+        bookDTO.setIsbn(book.getIsbn());
+        bookDTO.setAuthor(userDTO);
+        bookDTO.setPublishDate(book.getPublishDate());
+        bookDTO.setUrlLink(book.getUrlLink());
+        bookDTO.setApproved(book.isApproved());
+        bookDTO.setPageCover(book.getPageCover());
+        bookDTO.setNumberOfReviews(reviewRepository.countByBook_Id(book.getId()));
+        bookDTO.setRating(reviewRepository.findAverageByBook_Id(book.getId()));
+
+        return bookDTO;
     }
 }
