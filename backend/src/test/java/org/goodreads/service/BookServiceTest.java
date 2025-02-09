@@ -8,10 +8,8 @@ import org.greatreads.exception.UserNotFoundException;
 import org.greatreads.model.Book;
 import org.greatreads.model.Genre;
 import org.greatreads.model.User;
-import org.greatreads.repository.BookRepository;
-import org.greatreads.repository.GenreRepository;
-import org.greatreads.repository.ReviewRepository;
-import org.greatreads.repository.UserRepository;
+import org.greatreads.model.UserToBooks;
+import org.greatreads.repository.*;
 import org.greatreads.service.impl.BookServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -41,6 +39,9 @@ class BookServiceTest {
     @Mock
     private ReviewRepository reviewRepository;
 
+    @Mock
+    private UserToBooksRepository userToBooksRepository;
+
     @InjectMocks
     private BookServiceImpl bookService;
 
@@ -69,6 +70,15 @@ class BookServiceTest {
     }
 
     @Test
+    void testGetBooks_NoResults() {
+        Mockito.when(bookRepository.findAll()).thenReturn(List.of());
+        List<BookResponseDTO> result = bookService.getBooks();
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(0, result.size());
+    }
+
+    @Test
     void testBooksByGenre() {
         User user = new User();
         user.setId(1);
@@ -92,6 +102,21 @@ class BookServiceTest {
 
         List<BookResponseDTO> result = bookService.getBooksByGenre(genre.getName());
         Assertions.assertEquals(books.size(), result.size());
+    }
+
+    @Test
+    void testBooksByGenre_NoResults() {
+        Genre genre = new Genre();
+        genre.setId(1);
+        genre.setName("Mystery");
+
+        Mockito.when(genreRepository.findByName(genre.getName())).thenReturn(Optional.of(genre));
+        Mockito.when(bookRepository.findAllByGenre(genre)).thenReturn(List.of());
+
+        List<BookResponseDTO> result = bookService.getBooksByGenre(genre.getName());
+
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(0, result.size());
     }
 
     @Test
@@ -315,5 +340,117 @@ class BookServiceTest {
         String url = "URL";
         Mockito.when(bookRepository.findById(bookId)).thenThrow(new BookNotFoundException(bookId));
         Assertions.assertThrows(BookNotFoundException.class, () -> bookService.uploadBook(bookId, url));
+    }
+
+    @Test
+    void testGetReadBooks() {
+        User user = new User();
+        user.setId(3);
+
+        Genre genre = new Genre();
+        genre.setId(4);
+
+        Book book = new Book();
+        book.setGenre(genre);
+        book.setAuthor(user);
+
+        Book book2 = new Book();
+        book2.setGenre(genre);
+        book2.setAuthor(user);
+
+        UserToBooks userToBooks = new UserToBooks();
+        userToBooks.setUser(user);
+        userToBooks.setBook(book);
+
+        UserToBooks userToBooks2 = new UserToBooks();
+        userToBooks2.setUser(user);
+        userToBooks2.setBook(book2);
+
+        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        Mockito.when(userToBooksRepository.findByUserAndIsRead(user, true))
+                .thenReturn(List.of(userToBooks, userToBooks2));
+
+        List<BookResponseDTO> results = bookService.getReadBooks(user.getId());
+
+        Assertions.assertNotNull(results);
+        Assertions.assertEquals(2, results.size());
+    }
+
+    @Test
+    void testGetReadBooks_noResults() {
+        User user = new User();
+        user.setId(3);
+
+        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        Mockito.when(userToBooksRepository.findByUserAndIsRead(user, true))
+                .thenReturn(List.of());
+
+        List<BookResponseDTO> results = bookService.getReadBooks(user.getId());
+
+        Assertions.assertNotNull(results);
+        Assertions.assertEquals(0, results.size());
+    }
+
+    @Test
+    void testGetReadBooks_UserNotFound() {
+        int userId = 1;
+        Mockito.when(userRepository.findById(userId)).thenThrow(new UserNotFoundException(userId));
+        Assertions.assertThrows(UserNotFoundException.class, () -> bookService.getReadBooks(userId));
+    }
+
+    @Test
+    void testGetWishlistBooks() {
+        User user = new User();
+        user.setId(3);
+
+        Genre genre = new Genre();
+        genre.setId(4);
+
+        Book book = new Book();
+        book.setGenre(genre);
+        book.setAuthor(user);
+
+        Book book2 = new Book();
+        book2.setGenre(genre);
+        book2.setAuthor(user);
+
+        UserToBooks userToBooks = new UserToBooks();
+        userToBooks.setUser(user);
+        userToBooks.setBook(book);
+
+        UserToBooks userToBooks2 = new UserToBooks();
+        userToBooks2.setUser(user);
+        userToBooks2.setBook(book2);
+
+        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        Mockito.when(userToBooksRepository.findByUserAndIsWishlist(user, true))
+                .thenReturn(List.of(userToBooks, userToBooks2));
+
+        List<BookResponseDTO> results = bookService.getWishlistBooks(user.getId());
+
+        Assertions.assertNotNull(results);
+        Assertions.assertEquals(2, results.size());
+    }
+
+    @Test
+    void testGetWishlistBooks_noResults() {
+        User user = new User();
+        user.setId(3);
+
+        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        Mockito.when(userToBooksRepository.findByUserAndIsWishlist(user, true))
+                .thenReturn(List.of());
+
+        List<BookResponseDTO> results = bookService.getWishlistBooks(user.getId());
+
+        Assertions.assertNotNull(results);
+        Assertions.assertEquals(0, results.size());
+    }
+
+    @Test
+    void testGetWishlistBooks_UserNotFound() {
+        int userId = 1;
+        Mockito.when(userRepository.findById(userId)).thenThrow(new UserNotFoundException(userId));
+        Assertions.assertThrows(UserNotFoundException.class, () -> bookService.getWishlistBooks(userId));
     }
 }

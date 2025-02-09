@@ -12,10 +12,8 @@ import org.greatreads.exception.UserNotFoundException;
 import org.greatreads.model.Book;
 import org.greatreads.model.Genre;
 import org.greatreads.model.User;
-import org.greatreads.repository.BookRepository;
-import org.greatreads.repository.GenreRepository;
-import org.greatreads.repository.ReviewRepository;
-import org.greatreads.repository.UserRepository;
+import org.greatreads.model.UserToBooks;
+import org.greatreads.repository.*;
 import org.greatreads.service.BookService;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +27,7 @@ public class BookServiceImpl implements BookService {
     private final GenreRepository genreRepository;
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
+    private final UserToBooksRepository userToBooksRepository;
 
     @Override
     public List<BookResponseDTO> getBooks() {
@@ -135,6 +134,30 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId));
         book.setUrlLink(url);
         bookRepository.save(book);
+    }
+
+    @Override
+    public List<BookResponseDTO> getReadBooks(int userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        List<UserToBooks> books =  userToBooksRepository.findByUserAndIsRead(user, true);
+
+        List<BookResponseDTO> responseDTOList = new ArrayList<>();
+        for (UserToBooks userToBooks : books) {
+            responseDTOList.add(bookToDto(userToBooks.getBook()));
+        }
+        return responseDTOList;
+    }
+
+    @Override
+    public List<BookResponseDTO> getWishlistBooks(int userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        List<UserToBooks> books =  userToBooksRepository.findByUserAndIsWishlist(user, true);
+
+        List<BookResponseDTO> responseDTOList = new ArrayList<>();
+        for (UserToBooks userToBooks : books) {
+            responseDTOList.add(bookToDto(userToBooks.getBook()));
+        }
+        return responseDTOList;
     }
 
     private BookResponseDTO bookToDto(Book book) {

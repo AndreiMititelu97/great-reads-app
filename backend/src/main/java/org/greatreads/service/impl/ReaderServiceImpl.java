@@ -25,6 +25,19 @@ public class ReaderServiceImpl implements ReaderService {
     @Override
     @Transactional
     public void markBookAsRead(int bookId, int userId) {
+        UserToBooks userToBooks = getOrCreateRow(bookId, userId);
+        userToBooks.setRead(true);
+        userToBooksRepository.save(userToBooks);
+    }
+
+    @Override
+    public void addBookToWishlist(int bookId, int userId) {
+        UserToBooks userToBooks = getOrCreateRow(bookId, userId);
+        userToBooks.setWishlist(true);
+        userToBooksRepository.save(userToBooks);
+    }
+
+    private UserToBooks getOrCreateRow(int bookId, int userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId));
         Optional<UserToBooks> row = userToBooksRepository.findByUserAndBook(user, book);
@@ -37,22 +50,6 @@ public class ReaderServiceImpl implements ReaderService {
             userToBooks.setUser(user);
             userToBooks.setBook(book);
         }
-        userToBooks.setRead(true);
-        userToBooksRepository.save(userToBooks);
-    }
-
-    @Override
-    public void addBookToWishlist(int bookId, int userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId));
-        Optional<UserToBooks> row = userToBooksRepository.findByUserAndBook(user, book);
-
-        if (row.isEmpty()) {
-            UserToBooks userToBooks = new UserToBooks();
-            userToBooks.setUser(user);
-            userToBooks.setBook(book);
-            userToBooks.setWishlist(true);
-            userToBooksRepository.save(userToBooks);
-        }
+        return userToBooks;
     }
 }
