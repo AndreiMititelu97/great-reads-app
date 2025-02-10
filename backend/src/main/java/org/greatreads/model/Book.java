@@ -45,9 +45,11 @@ public class Book {
     @Column(name = "page_cover")
     private String pageCover;
 
+    //TODO @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    // TODO @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
