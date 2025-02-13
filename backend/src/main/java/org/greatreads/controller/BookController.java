@@ -22,6 +22,11 @@ public class BookController {
         return ResponseEntity.status(HttpStatus.CREATED).body(bookService.addBook(bookDTO));
     }
 
+    @GetMapping("/{bookId}")
+    public ResponseEntity<BookResponseDTO> getBook(@PathVariable int bookId) {
+        return ResponseEntity.ok(bookService.getBookById(bookId));
+    }
+
     @GetMapping()
     public List<BookResponseDTO> getBooks() {
         return bookService.getBooks();

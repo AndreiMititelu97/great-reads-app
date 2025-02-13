@@ -2,6 +2,7 @@ package org.greatreads.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.greatreads.dto.user.UserSimpleResponseDTO;
 import org.greatreads.exception.UserAlreadyExistsException;
 import org.greatreads.exception.UserNotFoundException;
 import org.greatreads.model.Role;
@@ -13,39 +14,49 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-
     private final UserRepository userRepository;
 
     @Override
-    public User login(String email, String password) {
-        return null;//TODO security
+    public void login(String email, String password) {
+        //TODO security
     }
 
     @Override
-    public User register(String email, String password, Role role) {
-        return null;//TODO security
+    public UserSimpleResponseDTO register(String email, String password, Role role) {
+        if (userRepository.existsByEmail(email)) {
+            throw new UserAlreadyExistsException(email);
+        }
+
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setRole(role);
+        userRepository.save(user);
+
+        return userToDto(user);
     }
 
     @Override
     @Transactional
-    public User updateEmail(String currentEmail, String newEmail) {
+    public UserSimpleResponseDTO updateEmail(String currentEmail, String newEmail) {
         if (userRepository.existsByEmail(newEmail)) {
             throw new UserAlreadyExistsException(newEmail);
         }
 
         User user = userRepository.findByEmail(currentEmail).orElseThrow(() -> new UserNotFoundException(currentEmail));
         user.setEmail(newEmail);
+        userRepository.save(user);
 
-        return user;
+        return userToDto(user);
     }
 
     @Override
-    public User updatePassword(String email, String oldPassword, String newPassword) {
+    public UserSimpleResponseDTO updatePassword(String email, String oldPassword, String newPassword) {
         return null;//TODO security
     }
 
     @Override
-    public User uploadProfilePicture(String email, String pictureLink) {
+    public UserSimpleResponseDTO uploadProfilePicture(String email, String pictureLink) {
         return null;
     }
 
@@ -57,5 +68,15 @@ public class UserServiceImpl implements UserService {
 
         user.setIsBlocked(true);
         userRepository.save(user);
+    }
+
+    private UserSimpleResponseDTO userToDto(User user) {
+        UserSimpleResponseDTO userResponseDTO = new UserSimpleResponseDTO();
+        userResponseDTO.setId(user.getId());
+        userResponseDTO.setEmail(user.getEmail());
+        userResponseDTO.setFirstName(user.getFirstName());
+        userResponseDTO.setLastName(user.getLastName());
+        userResponseDTO.setAvatar(user.getAvatar());
+        return userResponseDTO;
     }
 }

@@ -55,6 +55,12 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    public BookResponseDTO getBookById(int bookId) {
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId));
+        return bookToDto(book);
+    }//TODO tests
+
+    @Override
     @Transactional
     public BookResponseDTO addBook(BookDTO bookDTO) {
         User user = userRepository.findById(bookDTO.getAuthorId())
