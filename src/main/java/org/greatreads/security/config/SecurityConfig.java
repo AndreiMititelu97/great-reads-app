@@ -37,13 +37,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/reviews/books/{bookId}").permitAll()
 
                         //Admin
-                        .requestMatchers("/administrator/**").hasRole(("ROLE_ADMIN"))
+                        .requestMatchers("/administrator/**").hasAuthority(("ROLE_ADMIN"))
 
                         //Author
-                        .requestMatchers("/author/**").hasRole(("ROLE_AUTHOR"))
+                        .requestMatchers("/author/**").hasAuthority(("ROLE_AUTHOR"))
 
                         //Reader
-                        .requestMatchers("/reader/**").hasAnyRole("ROLE_READER", "ROLE_ADMIN")
+                        .requestMatchers("/reader/**").hasAnyAuthority("ROLE_READER", "ROLE_ADMIN")
 
                         //Authenticated
                         .requestMatchers(HttpMethod.POST, "/reviews").authenticated()
