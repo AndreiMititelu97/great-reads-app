@@ -1,12 +1,14 @@
 package org.greatreads.dto.user;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDTO {
+public class UserRegisterDTO {
     @NotBlank(message = "Email is mandatory")
     @Email(message = "Invalid email format")
     private String email;
@@ -22,12 +24,4 @@ public class UserDTO {
 
     @NotBlank(message = "Last name is mandatory")
     private String lastName;
-
-    @Positive(message = "Role id must be positive")
-    @NotNull(message = "Role id can not be null")
-    private Integer roleId;
-
-    private Boolean isBlocked = false;
-
-    private String avatar;
 }

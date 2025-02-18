@@ -16,8 +16,6 @@ class UserSimpleResponseDTOTest {
     private static final String EMAIL = "test@email.com";
     private static final String FIRST_NAME = "first name";
     private static final String LAST_NAME = "last name";
-    private static final String AVATAR = "avatar.png";
-
     private Validator validator;
     private UserSimpleResponseDTO userSimpleResponseDTO;
 
@@ -35,7 +33,6 @@ class UserSimpleResponseDTOTest {
         userSimpleResponseDTO.setEmail(EMAIL);
         userSimpleResponseDTO.setFirstName(FIRST_NAME);
         userSimpleResponseDTO.setLastName(LAST_NAME);
-        userSimpleResponseDTO.setAvatar(AVATAR);
 
         Set<ConstraintViolation<UserSimpleResponseDTO>> constraintViolations = validator.validate(userSimpleResponseDTO);
         Assertions.assertTrue(constraintViolations.isEmpty());

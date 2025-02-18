@@ -31,16 +31,21 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         // Public
-                        .requestMatchers("/books/**").permitAll()
-                        .requestMatchers("/user/login").permitAll()
-                        .requestMatchers("/reviews/books/{bookId}").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/user/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/user/register").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/books/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/reviews/books/{bookId}").permitAll()
+
                         //Admin
-                        .requestMatchers("/administrator/**").hasAuthority(("ROLE_ADMIN"))
+                        .requestMatchers("/administrator/**").hasRole(("ROLE_ADMIN"))
+
                         //Author
+                        .requestMatchers("/author/**").hasRole(("ROLE_AUTHOR"))
 
                         //Reader
-                        .requestMatchers("/reader/**").hasAnyAuthority("ROLE_READER", "ROLE_ADMIN")
+                        .requestMatchers("/reader/**").hasAnyRole("ROLE_READER", "ROLE_ADMIN")
 
+                        //Authenticated
                         .requestMatchers(HttpMethod.POST, "/reviews").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/reviews/{reviewId}").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/reviews/{reviewId}").authenticated()

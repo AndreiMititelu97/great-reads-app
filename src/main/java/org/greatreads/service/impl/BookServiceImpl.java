@@ -178,7 +178,6 @@ public class BookServiceImpl implements BookService {
         userDTO.setEmail(user.getEmail());
         userDTO.setFirstName(user.getFirstName());
         userDTO.setLastName(user.getLastName());
-        userDTO.setAvatar(user.getAvatar());
 
         BookResponseDTO bookDTO = new BookResponseDTO();
         bookDTO.setId(book.getId());

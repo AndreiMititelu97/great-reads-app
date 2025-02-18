@@ -10,5 +10,4 @@ public class UserSimpleResponseDTO {
     private String email;
     private String firstName;
     private String lastName;
-    private String avatar;
 }
