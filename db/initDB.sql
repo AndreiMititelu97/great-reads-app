@@ -90,9 +90,9 @@ CREATE TABLE `user_books`(
 
 -- Insert initial roles
 INSERT INTO `roles`(id, name) VALUES
-(1, 'Admin'),
-(2, 'Author'),
-(3, 'Reader');
+(1, 'ROLE_ADMIN'),
+(2, 'ROLE_AUTHOR'),
+(3, 'ROLE_READER');
 
 -- Insert initial genres
 INSERT INTO `genres`(name) VALUES
