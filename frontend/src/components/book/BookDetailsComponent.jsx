@@ -1,41 +1,29 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Container, Typography, Card, CardContent, CardMedia, CircularProgress, List, ListItem, ListItemText } from "@mui/material";
-
-const BASE_API = "http://localhost:8080"; // Adjust if needed
+import { Container, Typography, Card, CardContent, CardMedia, List, ListItem, ListItemText } from "@mui/material";
+import {getBookDetails, getReviewsForBook} from "../../api/api.js";
 
 const BookDetailsComponent = () => {
     const { id } = useParams();
     const [book, setBook] = useState(null);
     const [reviews, setReviews] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchBookDetails = async () => {
-            try {
-                const bookResponse = await fetch(`${BASE_API}/books/${id}`);
-                const reviewResponse = await fetch(`${BASE_API}/reviews/books/${id}`);
+            const bookResponse = await getBookDetails(id);
+            const reviewResponse = await getReviewsForBook(id);
 
-                if (!bookResponse.ok || !reviewResponse.ok) throw new Error("Failed to fetch data");
+            if (!bookResponse.ok || !reviewResponse.ok) throw new Error("Failed to fetch data");
 
-                const bookData = await bookResponse.json();
-                const reviewsData = await reviewResponse.json();
+            const bookData = await bookResponse.json();
+            const reviewsData = await reviewResponse.json();
 
-                setBook(bookData);
-                setReviews(reviewsData);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
+            setBook(bookData);
+            setReviews(reviewsData);
         };
 
         fetchBookDetails();
     }, [id]);
-
-    if (loading) return <CircularProgress sx={{ display: 'block', margin: 'auto', mt: 5 }} />;
-    if (error) return <Typography color="error" sx={{ textAlign: 'center', mt: 5 }}>{error}</Typography>;
 
     return (
         <Container maxWidth="md">
