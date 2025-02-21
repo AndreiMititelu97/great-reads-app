@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
             throw new UsernameNotFoundException("Invalid username or password");
         }
 
-        return jwtService.createToken(email, user.getRole().getName());
+        return jwtService.createToken(user.getEmail(), user.getRole().getName(), user.getId());
     }
 
     @Override
