@@ -6,6 +6,10 @@ import {Route, Routes} from "react-router-dom";
 import FooterComponent from "./components/FooterComponent.jsx";
 import RegisterComponent from "./components/RegisterComponent.jsx";
 import BookDetailsComponent from "./components/book/BookDetailsComponent.jsx";
+import ReaderDashboardComponent from "./components/reader/ReaderDashboardComponent.jsx";
+import WishlistComponent from "./components/reader/WishlistComponent.jsx";
+import ReadBooksComponent from "./components/reader/ReadBooksComponent.jsx";
+import LogoutComponent from "./components/LogoutComponent.jsx";
 
 function App() {
 
@@ -13,10 +17,15 @@ function App() {
     <>
         <HeaderComponent/>
         <Routes>
-            <Route path="/" element={<LoginComponent/>}/>
+            <Route path="/login" element={<LoginComponent/>}/>
             <Route path="/books" element={<ViewAllBooksComponent/>}/>
             <Route path="/books/:id" element={<BookDetailsComponent/>}/>
             <Route path="/register" element={<RegisterComponent/>}/>
+            <Route path="/logout" element={<LogoutComponent/>}/>
+
+            <Route path="/reader" element={<ReaderDashboardComponent/>}/>
+            <Route path="/reader/wishlist" element={<WishlistComponent/>}/>
+            <Route path="/reader/read" element={<ReadBooksComponent/>}/>
         </Routes>
         <FooterComponent/>
     </>
