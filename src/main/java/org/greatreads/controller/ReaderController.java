@@ -37,4 +37,7 @@ public class ReaderController {
     public ResponseEntity<List<BookResponseDTO>> getWishlistBooks(@PathVariable int userId) {
         return ResponseEntity.ok(bookService.getWishlistBooks(userId));
     }
+
+    //TODO remove from wishlist
+    //TODO remove from read books
 }
