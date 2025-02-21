@@ -1,15 +1,15 @@
 import './App.css'
 import HeaderComponent from "./components/HeaderComponent.jsx";
 import ViewAllBooksComponent from "./components/book/ViewAllBooksComponent.jsx";
-import LoginComponent from "./components/LoginComponent.jsx";
+import LoginComponent from "./components/auth/LoginComponent.jsx";
 import {Route, Routes} from "react-router-dom";
 import FooterComponent from "./components/FooterComponent.jsx";
-import RegisterComponent from "./components/RegisterComponent.jsx";
+import RegisterComponent from "./components/auth/RegisterComponent.jsx";
 import BookDetailsComponent from "./components/book/BookDetailsComponent.jsx";
 import ReaderDashboardComponent from "./components/reader/ReaderDashboardComponent.jsx";
 import WishlistComponent from "./components/reader/WishlistComponent.jsx";
 import ReadBooksComponent from "./components/reader/ReadBooksComponent.jsx";
-import LogoutComponent from "./components/LogoutComponent.jsx";
+import LogoutComponent from "./components/auth/LogoutComponent.jsx";
 
 function App() {
 

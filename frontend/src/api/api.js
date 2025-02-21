@@ -148,4 +148,25 @@ export const getWishlist = async (userId) => {
     }
 };
 
+export const registerUser = async (userData) => {
+    try {
+        const response = await fetch(`${BASE_API}user/register`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(userData),
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to register user");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Registration error:", error);
+        throw error;
+    }
+};
+
 
