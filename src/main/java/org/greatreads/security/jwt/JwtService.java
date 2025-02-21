@@ -22,12 +22,15 @@ public class JwtService {
     @Value("${jwt.accessTokenValidityMS}")
     private int jwtExpirationMs;
 
-    public String createToken(String email, String role) {
+    public String createToken(String email, String role, int userId) {
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
 
         return Jwts.builder()
                 .subject(email)
-                .claims(Map.of("role", role))
+                .claims(Map.of(
+                        "userId", userId,
+                        "role", role
+                ))
                 .issuedAt(new Date())
                 .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
                 .signWith(key)
