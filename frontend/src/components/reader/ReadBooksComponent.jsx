@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { Container, Typography, Grid } from "@mui/material";
 import BookCardComponent from "../book/BookCardComponent.jsx";
 import { getReadBooks } from "../../api/api.js";
+import {useNavigate} from "react-router-dom";
 
 const ReadBooksComponent = () => {
     const [books, setBooks] = useState([]);
     const [userId, setUserId] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -43,7 +45,7 @@ const ReadBooksComponent = () => {
             <Grid container spacing={3}>
                 {books.map((book) => (
                     <Grid item xs={12} sm={6} md={4} key={book.id}>
-                        <BookCardComponent book={book} />
+                        <BookCardComponent book={book} onClick={() => navigate(`/books/${book.id}`)}/>
                     </Grid>
                 ))}
             </Grid>
