@@ -38,6 +38,11 @@ public class ReaderController {
         return ResponseEntity.ok(bookService.getWishlistBooks(userId));
     }
 
-    //TODO remove from wishlist
+    @DeleteMapping("/wishlist/{userId}/{bookId}")
+    public ResponseEntity<Void> removeFromWishlist(@PathVariable int bookId, @PathVariable int userId) {
+        readerService.removeFromWishlist(bookId, userId);
+        return ResponseEntity.noContent().build();
+    }
+
     //TODO remove from read books
 }
