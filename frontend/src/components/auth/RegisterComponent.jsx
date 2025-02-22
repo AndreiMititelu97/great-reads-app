@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {TextField, MenuItem, Button, FormControl, InputLabel, Select, Container, Typography, Box, Avatar,} from "@mui/material";
+import {TextField, Button, Container, Typography, Box, Avatar,} from "@mui/material";
 import { registerUser } from "../../api/api.js";
-
-const roles = ["READER", "AUTHOR", "ADMIN"];
 
 const RegisterComponent = () => {
     const [formData, setFormData] = useState({

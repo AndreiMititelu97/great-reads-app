@@ -143,6 +143,4 @@ class ReaderServiceTest {
         Assertions.assertEquals(book, userToBooks.getBook());
         Assertions.assertEquals(user, userToBooks.getUser());
     }
-    // TODO testAddToWishlist_AlreadyAddedToWishlist ?
-    // TODO testAddToWishlist_AlreadyRead ?
 }

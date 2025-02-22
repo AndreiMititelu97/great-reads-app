@@ -453,4 +453,34 @@ class BookServiceTest {
         Mockito.when(userRepository.findById(userId)).thenThrow(new UserNotFoundException(userId));
         Assertions.assertThrows(UserNotFoundException.class, () -> bookService.getWishlistBooks(userId));
     }
+
+    @Test
+    void testGetBookById_BookNotFound() {
+        int bookId = 1;
+        Mockito.when(bookRepository.findById(bookId)).thenThrow(new BookNotFoundException(bookId));
+        Assertions.assertThrows(BookNotFoundException.class, () -> bookService.getBookById(bookId));
+    }
+
+    @Test
+    void testGetBookById() {
+        User user = new User();
+        user.setId(3);
+
+        Genre genre = new Genre();
+        genre.setId(4);
+
+        Book book = new Book();
+        book.setGenre(genre);
+        book.setAuthor(user);
+        book.setId(1);
+
+        Mockito.when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
+
+        BookResponseDTO bookResponseDTO = bookService.getBookById(book.getId());
+
+        Assertions.assertNotNull(bookResponseDTO);
+        Assertions.assertEquals(book.getId(), bookResponseDTO.getId());
+        Assertions.assertEquals(book.getAuthor().getId(), bookResponseDTO.getAuthor().getId());
+        Assertions.assertEquals(book.getGenre().getId(), bookResponseDTO.getGenre().getId());
+    }
 }
