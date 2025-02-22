@@ -9,8 +9,8 @@ import java.time.LocalDateTime;
 @Setter
 public class ReviewResponseDTO {
     private Integer id;
-    private Integer userId; //TODO replace userId with UserDTO?
-    private Integer bookId; //TODO replace bookId with BookDTO?
+    private Integer userId;
+    private Integer bookId;
     private Integer rating;
     private String comment;
     private LocalDateTime publishedDate;
