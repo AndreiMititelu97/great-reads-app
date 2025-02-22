@@ -2,4 +2,4 @@
 
 ## Database Diagram
 
-![Great Reads.png](db/Great%20Reads.png)
+![Great Reads.png](database/Great%20Reads.png)
