@@ -31,4 +31,5 @@ public class UserController {
 
     //TODO updatePassword
     //TODO updateemail
+    //TODO add profile picture
 }

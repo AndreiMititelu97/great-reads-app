@@ -44,5 +44,9 @@ public class ReaderController {
         return ResponseEntity.noContent().build();
     }
 
-    //TODO remove from read books
+    @DeleteMapping("/read/{userId}/{bookId}")
+    public ResponseEntity<Void> removeBookAsRead(@PathVariable int bookId, @PathVariable int userId) {
+        readerService.removeBookAsRead(bookId, userId);
+        return ResponseEntity.noContent().build();
+    }
 }

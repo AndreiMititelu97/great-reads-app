@@ -44,6 +44,13 @@ public class ReaderServiceImpl implements ReaderService {
         userToBooksRepository.save(userToBooks);
     }
 
+    @Override
+    public void removeBookAsRead(int bookId, int userId) {
+        UserToBooks userToBooks = getOrCreateRow(bookId, userId);
+        userToBooks.setRead(false);
+        userToBooksRepository.save(userToBooks);
+    }
+
     private UserToBooks getOrCreateRow(int bookId, int userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException(bookId));

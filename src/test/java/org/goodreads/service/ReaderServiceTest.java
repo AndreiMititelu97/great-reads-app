@@ -190,4 +190,51 @@ class ReaderServiceTest {
         Assertions.assertEquals(book, result.getBook());
         Assertions.assertEquals(user, result.getUser());
     }
+
+    @Test
+    void testRemoveBookAsRead_UserNotFound() {
+        int userId = 1;
+        int bookId = 2;
+        Mockito.when(userRepository.findById(userId)).thenThrow(new UserNotFoundException(userId));
+        assertThrows(UserNotFoundException.class, () -> readerService.removeBookAsRead(bookId,userId));
+    }
+
+    @Test
+    void testRemoveBookAsRead_BookNotFound() {
+        User user = new User();
+        user.setId(1);
+        int bookId = 2;
+        int userId = user.getId();
+        Mockito.when(userRepository.findById(userId)).thenReturn(Optional.of(user));
+        Mockito.when(bookRepository.findById(bookId)).thenThrow(new BookNotFoundException(bookId));
+        assertThrows(BookNotFoundException.class, () -> readerService.removeBookAsRead(bookId, userId));
+    }
+
+    @Test
+    void testRemoveBookAsRead() {
+        User user = new User();
+        user.setId(1);
+        Book book = new Book();
+        book.setId(2);
+
+        Mockito.when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        Mockito.when(bookRepository.findById(book.getId())).thenReturn(Optional.of(book));
+
+        UserToBooks userToBooks = new UserToBooks();
+        userToBooks.setUser(user);
+        userToBooks.setBook(book);
+        userToBooks.setRead(true);
+
+        Mockito.when(userToBooksRepository.findByUserAndBook(user, book)).thenReturn(Optional.of(userToBooks));
+        ArgumentCaptor<UserToBooks> captor = ArgumentCaptor.forClass(UserToBooks.class);
+        readerService.removeBookAsRead(book.getId(), user.getId());
+
+        verify(userToBooksRepository).save(captor.capture());
+        UserToBooks result = captor.getValue();
+
+        Assertions.assertNotNull(result);
+        Assertions.assertFalse(result.isRead());
+        Assertions.assertEquals(book, result.getBook());
+        Assertions.assertEquals(user, result.getUser());
+    }
 }
