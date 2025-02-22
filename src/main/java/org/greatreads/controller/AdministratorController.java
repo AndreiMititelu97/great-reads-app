@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/administrator")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:8082")
 public class AdministratorController {
     private final AdministratorService administratorService;
     private final BookServiceImpl bookService;
