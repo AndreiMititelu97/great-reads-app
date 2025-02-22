@@ -16,7 +16,7 @@ const HeaderComponent = () => {
                 {token && <Button color="inherit" component={Link} to="/reader">My Books</Button>}
                 <Button color="inherit" component={Link} to="/books">Books</Button>
                 |
-                <Button color="inherit" component={Link} to="/login">Login</Button>
+                <Button color="inherit" component={Link} to="/">Login</Button>
                 <Button color="inherit" component={Link} to="/register">Register</Button>
                 {token && <Button color="inherit" component={Link} to="/logout">Logout</Button>}
             </Toolbar>

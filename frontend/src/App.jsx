@@ -17,7 +17,7 @@ function App() {
             <HeaderComponent />
             <div style={{ paddingBottom: "90px" }}>
                 <Routes>
-                    <Route path="/login" element={<LoginComponent />} />
+                    <Route path="/" element={<LoginComponent />} />
                     <Route path="/books" element={<ViewAllBooksComponent />} />
                     <Route path="/books/:id" element={<BookDetailsComponent />} />
                     <Route path="/register" element={<RegisterComponent />} />

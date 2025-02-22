@@ -8,7 +8,7 @@ const LogoutComponent = () => {
         const logout = () => {
             localStorage.removeItem('token');
 
-            navigate('/login');
+            navigate('/');
             window.location.reload();
         };
 

@@ -26,7 +26,7 @@ const RegisterComponent = () => {
         try {
             await registerUser(formData);
             console.log("User registered successfully:", formData);
-            navigate("/login"); // Redirect to login page
+            navigate("/");
         } catch (error) {
             setError("Registration failed. Please try again.");
         }
