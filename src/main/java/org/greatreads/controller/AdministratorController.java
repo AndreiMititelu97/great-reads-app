@@ -6,6 +6,7 @@ import org.greatreads.dto.book.BookDTO;
 import org.greatreads.dto.book.BookResponseDTO;
 import org.greatreads.service.AdministratorService;
 import org.greatreads.service.impl.BookServiceImpl;
+import org.greatreads.service.impl.UserServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdministratorController {
     private final AdministratorService administratorService;
     private final BookServiceImpl bookService;
+    private final UserServiceImpl userService;
 
     @PutMapping("/books/{bookId}/approve")
     public ResponseEntity<Void> approveBook(@PathVariable int bookId) {
@@ -39,5 +41,9 @@ public class AdministratorController {
         return ResponseEntity.ok(bookService.updateBook(bookId, bookDTO));
     }
 
-    //TODO blockUser
+    @PatchMapping("/users/{userId}/block")
+    public ResponseEntity<Void> blockUser(@PathVariable int userId) {
+        userService.blockUser(userId);
+        return ResponseEntity.noContent().build();
+    }
 }

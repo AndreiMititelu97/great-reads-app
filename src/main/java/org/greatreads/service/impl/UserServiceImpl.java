@@ -86,16 +86,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserSimpleResponseDTO uploadProfilePicture(String email, String pictureLink) {
-        return null;//TODO
+    public void uploadProfilePicture(int userId, String pictureLink) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        user.setAvatar(pictureLink);
+        userRepository.save(user);
     }
 
     @Override
     @Transactional
-    public void blockUser(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException(email));
-
+    public void blockUser(int userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         user.setIsBlocked(true);
         userRepository.save(user);
     }

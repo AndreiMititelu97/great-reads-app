@@ -8,6 +8,6 @@ public interface UserService {
     UserSimpleResponseDTO register(UserRegisterDTO userRegisterDTO);
     UserSimpleResponseDTO updateEmail(String currentEmail, String newEmail);
     UserSimpleResponseDTO updatePassword(String email, String oldPassword, String newPassword);
-    UserSimpleResponseDTO uploadProfilePicture(String email, String pictureLink);
-    void blockUser(String email);
+    void uploadProfilePicture(int userId, String pictureLink);
+    void blockUser(int userId);
 }
