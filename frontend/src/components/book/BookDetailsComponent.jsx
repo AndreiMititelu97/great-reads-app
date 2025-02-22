@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import {Container, Typography, Card, CardContent, CardMedia, List, ListItem, ListItemText, Button, Stack} from "@mui/material";
-import { getBookDetails, getReviewsForBook, addToWishlist, markAsRead } from "../../api/api.js";
+import { Container, Typography, Card, CardContent, CardMedia, List, ListItem, ListItemText, Button, Stack, TextField, Rating } from "@mui/material";
+import { getBookDetails, getReviewsForBook, addToWishlist, markAsRead, addReview } from "../../api/api.js";
 
 const BookDetailsComponent = () => {
     const { id } = useParams();
     const [book, setBook] = useState(null);
     const [reviews, setReviews] = useState([]);
     const [userId, setUserId] = useState(null);
+    const [rating, setRating] = useState(0);
+    const [comment, setComment] = useState("");
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -63,6 +65,33 @@ const BookDetailsComponent = () => {
         }
     };
 
+    const handleReviewSubmit = async (e) => {
+        e.preventDefault();
+        if (!userId) {
+            alert("You must be logged in to leave a review.");
+            return;
+        }
+
+        const token = localStorage.getItem("token");
+
+        try {
+            await addReview({ userId, bookId: id, rating, comment }, token);
+            alert("Review submitted successfully!");
+            setRating(0);
+            setComment("");
+
+            // Refresh the reviews and book data after submission
+            const updatedReviews = await getReviewsForBook(id);
+            setReviews(updatedReviews);
+
+            // Recalculate the average rating of the book
+            const updatedBookData = await getBookDetails(id);
+            setBook(updatedBookData);
+        } catch (error) {
+            alert("Error submitting review: " + error.message);
+        }
+    };
+
     return (
         <Container maxWidth="md">
             {book && (
@@ -110,6 +139,32 @@ const BookDetailsComponent = () => {
                         </List>
                     ) : (
                         <Typography>No reviews yet.</Typography>
+                    )}
+
+                    {userId && (
+                        <Card sx={{ mt: 4, p: 2 }}>
+                            <Typography variant="h6">Leave a Review</Typography>
+                            <form onSubmit={handleReviewSubmit}>
+                                <Rating
+                                    value={rating}
+                                    onChange={(e, newValue) => setRating(newValue)}
+                                    size="large"
+                                    sx={{ mt: 2 }}
+                                />
+                                <TextField
+                                    label="Comment"
+                                    fullWidth
+                                    multiline
+                                    rows={3}
+                                    value={comment}
+                                    onChange={(e) => setComment(e.target.value)}
+                                    sx={{ mt: 2 }}
+                                />
+                                <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+                                    Submit Review
+                                </Button>
+                            </form>
+                        </Card>
                     )}
                 </>
             )}

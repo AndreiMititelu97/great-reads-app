@@ -12,24 +12,25 @@ import ReadBooksComponent from "./components/reader/ReadBooksComponent.jsx";
 import LogoutComponent from "./components/auth/LogoutComponent.jsx";
 
 function App() {
+    return (
+        <>
+            <HeaderComponent />
+            <div style={{ paddingBottom: "90px" }}>
+                <Routes>
+                    <Route path="/login" element={<LoginComponent />} />
+                    <Route path="/books" element={<ViewAllBooksComponent />} />
+                    <Route path="/books/:id" element={<BookDetailsComponent />} />
+                    <Route path="/register" element={<RegisterComponent />} />
+                    <Route path="/logout" element={<LogoutComponent />} />
 
-  return (
-    <>
-        <HeaderComponent/>
-        <Routes>
-            <Route path="/login" element={<LoginComponent/>}/>
-            <Route path="/books" element={<ViewAllBooksComponent/>}/>
-            <Route path="/books/:id" element={<BookDetailsComponent/>}/>
-            <Route path="/register" element={<RegisterComponent/>}/>
-            <Route path="/logout" element={<LogoutComponent/>}/>
-
-            <Route path="/reader" element={<ReaderDashboardComponent/>}/>
-            <Route path="/reader/wishlist" element={<WishlistComponent/>}/>
-            <Route path="/reader/read" element={<ReadBooksComponent/>}/>
-        </Routes>
-        <FooterComponent/>
-    </>
-  )
+                    <Route path="/reader" element={<ReaderDashboardComponent />} />
+                    <Route path="/reader/wishlist" element={<WishlistComponent />} />
+                    <Route path="/reader/read" element={<ReadBooksComponent />} />
+                </Routes>
+            </div>
+            <FooterComponent />
+        </>
+    );
 }
 
 export default App

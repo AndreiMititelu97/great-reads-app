@@ -169,4 +169,27 @@ export const registerUser = async (userData) => {
     }
 };
 
+export const addReview = async (reviewData, token) => {
+    try {
+        const response = await fetch("http://localhost:8080/reviews", { // Adjusted endpoint to match the backend
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,  // Ensure authorization token is added
+            },
+            body: JSON.stringify(reviewData),
+        });
+
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(`Failed to add review: ${errorMessage}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error submitting review:", error);
+        throw error;
+    }
+};
+
 
