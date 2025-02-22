@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: #TODO
+      SPRING_DATASOURCE_USERNAME: #TODO
+      SPRING_DATASOURCE_PASSWORD:  #TODO
+      JWT_SECRET: #TODO
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "8082:80"
+    volumes:
+      - ./frontend/public:/usr/share/nginx/html/public
+
+  db:
+    image: mysql:latest
+    container_name: mysql-database
+    environment:
+      MYSQL_ROOT_PASSWORD: #TODO
+      MYSQL_DATABASE: #TODO
+      MYSQL_USER: #TODO
+      MYSQL_PASSWORD: #TODO
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql:Z
+
+volumes:
+  mysql_data:
