@@ -1,6 +1,6 @@
 # Great Reads App
 
-An app for users to track books they have read, want to read, and review books. Inspired by Goodreads.
+An app for users to track books they have read, want to read, and review books.
 
 ## Description
 **Great Reads App** is an application inspired by the popular platform [Goodreads](https://www.goodreads.com/), allowing users to manage the books they have read, create wishlists and leave reviews, while authors can publish books and receive feedback from readers.
