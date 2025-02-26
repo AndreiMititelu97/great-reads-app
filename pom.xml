@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
     <groupId>org.greatreads</groupId>
-    <artifactId>devmind-fullstack-project</artifactId>
+    <artifactId>great-reads-app</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
